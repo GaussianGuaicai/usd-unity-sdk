@@ -221,7 +221,7 @@ namespace Unity.Formats.USD {
         else if (mat.HasProperty("_MainColor"))
         {
                 // Standard.
-                c = mat.GetColor("_MainColor");
+                c = mat.GetColor("_MainColor").linear;
                 surface.diffuseColor.defaultValue = new Vector3(c.r, c.g, c.b);
             }
       else {
