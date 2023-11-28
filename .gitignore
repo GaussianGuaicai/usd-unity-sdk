@@ -64,3 +64,5 @@ TestProject/Logs
 TestProject/Assets/Plugins
 TestProject/Assets/Samples*
 inst-dbg/
+*.code-workspace
+.vscode

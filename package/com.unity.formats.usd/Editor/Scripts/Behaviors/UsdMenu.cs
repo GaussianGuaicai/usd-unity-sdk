@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ namespace Unity.Formats.USD {
     }
     [MenuItem("USD/Export Selected with Children", priority = 50)]
     static void MenuExportSelectedWithChildren() {
-      ExportSelected(BasisTransformation.SlowAndSafe);
+            ExportSelected(BasisTransformation.SlowAndSafe);
     }
 
     [MenuItem("USD/Export Transform Overrides", true)]
@@ -179,7 +179,8 @@ namespace Unity.Formats.USD {
         try {
           SceneExporter.Export(go, scene, basisTransform,
                                exportUnvarying: true, zeroRootTransform: false,
-                               exportMonoBehaviours: exportMonoBehaviours);
+                               exportMonoBehaviours: exportMonoBehaviours,
+                               graftInOneRootPrim: true);
         } catch (System.Exception ex) {
           Debug.LogException(ex);
           continue;

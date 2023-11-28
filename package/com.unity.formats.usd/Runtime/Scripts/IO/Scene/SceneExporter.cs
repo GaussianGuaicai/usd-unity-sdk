@@ -56,6 +56,8 @@ namespace Unity.Formats.USD {
     public Transform exportRoot;
     public bool exportMaterials = true;
     public bool exportNative = false;
+    public bool graftInOneRootPrim = false;
+    public pxr.SdfPath oneRootPrimPath;
 
     public BasisTransformation basisTransform = BasisTransformation.FastWithNegativeScale;
     public ActiveExportPolicy activePolicy = ActiveExportPolicy.ExportAsVisibility;
@@ -113,11 +115,13 @@ namespace Unity.Formats.USD {
                               bool exportUnvarying,
                               bool zeroRootTransform,
                               bool exportMaterials = false,
-                              bool exportMonoBehaviours = false) {
+                              bool exportMonoBehaviours = false,
+                              bool graftInOneRootPrim = false) {
       var context = new ExportContext();
       context.scene = scene;
       context.basisTransform = basisTransform;
       context.exportRoot = root.transform.parent;
+      context.exportNative = true; // Gaussian: To export all gameobject components and its properties
       SyncExportContext(root, context);
 
       // Since this is a one-shot convenience function, we will automatically split the export
@@ -157,7 +161,13 @@ namespace Unity.Formats.USD {
       try {
         ExportImpl(root, context);
         var path = new pxr.SdfPath(UnityTypeConverter.GetPath(root.transform));
+                //if(context.graftInOneRootPrim)
+                //{
+                //    //path = path.ReplacePrefix(path.GetParentPath(), context.oneRootPrimPath);
+                //    path = context.oneRootPrimPath.AppendPath(path.MakeRelativePath(path.GetParentPath()));
+                //}
         var prim = context.scene.Stage.GetPrimAtPath(path);
+                Debug.Log(prim.GetPrimPath());
         if (prim) {
           context.scene.Stage.SetDefaultPrim(prim);
         }
@@ -211,6 +221,8 @@ namespace Unity.Formats.USD {
           continue;
         }
 
+                Debug.LogFormat("Export GameObject: {0}",go);
+
         foreach (Exporter exporter in exportPlan.exporters) {
           string path = exporter.path;
           SampleBase sample = exporter.sample;
@@ -222,6 +234,7 @@ namespace Unity.Formats.USD {
           };
 
           try {
+            //Debug.LogFormat("Export Func: {0}", exporter.exportFunc.Method.Name);
             exporter.exportFunc(objCtx, context);
           } catch (Exception ex) {
             Debug.LogException(new Exception("Error exporting: " + path, ex));
@@ -459,6 +472,7 @@ namespace Unity.Formats.USD {
       var mr = go.GetComponent<MeshRenderer>();
       var mf = go.GetComponent<MeshFilter>();
       var cam = go.GetComponent<Camera>();
+      var light = go.GetComponent<Light>();
       Transform expRoot = context.exportRoot;
 
       var tmpPath = new pxr.SdfPath(UnityTypeConverter.GetPath(go.transform, expRoot));
@@ -500,8 +514,8 @@ namespace Unity.Formats.USD {
             continue;
           }
           if (!context.matMap.ContainsKey(mat)) {
-            string usdPath = materialBasePath + pxr.UsdCs.TfMakeValidIdentifier(mat.name + "_" + mat.GetInstanceID().ToString());
-            context.matMap.Add(mat, usdPath);
+                        string usdPath = materialBasePath + pxr.UsdCs.TfMakeValidIdentifier(mat.name); // Gaussian: pxr.UsdCs.TfMakeValidIdentifier(mat.name + "_" + mat.GetInstanceID().ToString()) this will create a lot of same materials
+                        context.matMap.Add(mat, usdPath);
           }
         }
         CreateExportPlan(go, CreateSample<MeshSample>(context), MeshExporter.ExportMesh, context);
@@ -510,7 +524,12 @@ namespace Unity.Formats.USD {
         CreateExportPlan(go, CreateSample<CameraSample>(context), CameraExporter.ExportCamera, context);
         CreateExportPlan(go, CreateSample<CameraSample>(context), NativeExporter.ExportObject, context, insertFirst: false);
       }
-    }
+            else if (light != null)
+            {
+                CreateExportPlan(go, CreateSample<XformSample>(context), LightExporter.ExportXform, context);
+                CreateExportPlan(go, CreateSample<XformSample>(context), NativeExporter.ExportObject, context,insertFirst: false);
+            }
+        }
 
     static Transform MergeBonesBelowAnimator(Transform animator, ExportContext context) {
       var toRemove = new Dictionary<Transform, Transform>();

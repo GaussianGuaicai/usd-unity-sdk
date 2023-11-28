@@ -211,17 +211,31 @@ namespace Unity.Formats.USD {
       }
 #endif
 
+      // Set material color even the texture is exsist
+      if (mat.HasProperty("_Color")) {
+        // Standard.
+        c = mat.color.linear;
+        surface.diffuseColor.defaultValue = new Vector3(c.r, c.g, c.b);
+        //Debug.LogFormat("Material: {0} Color: {1}", mat,c);
+      }
+        else if (mat.HasProperty("_MainColor"))
+        {
+                // Standard.
+                c = mat.GetColor("_MainColor");
+                surface.diffuseColor.defaultValue = new Vector3(c.r, c.g, c.b);
+            }
+      else {
+        c = Color.white;
+        surface.diffuseColor.defaultValue = new Vector3(c.r, c.g, c.b);
+        //Debug.LogFormat("Material: {0} Default Color: {1}", mat,c);
+      }
+
+      // Connect texture after color assignment
       if (mat.HasProperty("_MainTex") && mat.GetTexture("_MainTex") != null) {
         var newTex = SetupTexture(scene, usdShaderPath, mat, surface, destTexturePath, "_MainTex", "rgb");
         surface.diffuseColor.SetConnectedPath(newTex);
-      } else if (mat.HasProperty("_Color")) {
-        // Standard.
-        c = mat.GetColor("_Color").linear;
-        surface.diffuseColor.defaultValue = new Vector3(c.r, c.g, c.b);
-      } else {
-        c = Color.white;
-        surface.diffuseColor.defaultValue = new Vector3(c.r, c.g, c.b);
-      }
+        //Debug.LogFormat("Material: {0} Color: {1}, Texture: {2}", mat, surface.diffuseColor.defaultValue, newTex);
+      } 
 
       // Standard Shader has 4 modes (magic shader values internally defined in StandardShaderGUI.cs):
       // Opaque - no opacity/transparency

@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\package\\com.unity.formats.usd",
+    "\\package\\com.unity.formats.usd\\Runtime",
+    "\\package\\com.unity.formats.usd\\Runtime\\Scripts",
+    "\\package\\com.unity.formats.usd\\Runtime\\Scripts\\IO",
+    "\\package\\com.unity.formats.usd\\Runtime\\Scripts\\IO\\Scene",
+    "\\src"
+  ],
+  "SelectedNode": "\\src\\USD.NET.sln",
+  "PreviewInSolutionExplorer": false
+}

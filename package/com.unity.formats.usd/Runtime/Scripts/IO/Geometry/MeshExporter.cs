@@ -161,9 +161,9 @@ namespace Unity.Formats.USD {
             if (!Application.isPlaying) {
                 return true;
             }
-            if (Mesh_canAccess == null) {
-                Mesh_canAccess = typeof(Mesh).GetProperty("canAccess", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetMethod;
-            }
+            //if (Mesh_canAccess == null) {
+            //    Mesh_canAccess = typeof(Mesh).GetProperty("canAccess", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetMethod;
+            //}
             if(Mesh_canAccess != null) {
                 try {
                     bool canAccess = (bool) Mesh_canAccess.Invoke(mesh, null);
@@ -262,9 +262,13 @@ namespace Unity.Formats.USD {
 
         // Gah. There is no way to inspect a meshes UVs.
         sample.st = mesh.uv;
+        sample.uv = mesh.uv;
+        sample.uv2 = mesh.uv2;
+        sample.uv3 = mesh.uv3;
+        sample.uv4 = mesh.uv4;
 
         // Set face vertex counts and indices.
-        var tris = mesh.triangles;
+                var tris = mesh.triangles;
 
         if (slowAndSafeConversion) {
           // Unity uses a forward vector that matches DirectX, but USD matches OpenGL, so a change

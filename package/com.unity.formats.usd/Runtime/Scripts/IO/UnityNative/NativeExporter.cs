@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using USD.NET;
 using USD.NET.Unity;
@@ -38,6 +39,7 @@ namespace Unity.Formats.USD {
       }
       var prim = exportContext.scene.GetPrimAtPath(objContext.path);
       ObjectToUsd(objContext.gameObject, prim, exportContext.scene);
+            //Debug.Log("Adding Components");
       foreach (Component comp in objContext.gameObject.GetComponents(typeof(Component))) {
         ComponentToUsd(comp, objContext.path, exportContext.scene);
       }
@@ -53,6 +55,10 @@ namespace Unity.Formats.USD {
       sb.AppendLine("Visited: " + path);
 
       prim.SetCustomDataByKey(new pxr.TfToken("unity:name"), new pxr.TfToken(gameObj.name));
+
+            var gameObj_root = gameObj.transform.root.gameObject;
+            string path_relto_root = GetHierarchyPath(gameObj, gameObj.transform.root.gameObject);
+            prim.SetCustomDataByKey(new pxr.TfToken("unity:path"), new pxr.TfToken(path_relto_root));
 
       var itr = obj.GetIterator();
       itr.Next(true);
@@ -73,7 +79,28 @@ namespace Unity.Formats.USD {
       itr.Next(true);
       PropertyToUsd(path, propPrefix, scene, itr, sb);
 
-      Debug.Log(sb.ToString());
+            if (propPrefix == "LODGroup")
+            {
+                var primPath = new pxr.SdfPath(path);
+                var prim = scene.GetPrimAtPath(primPath);
+
+                LODGroup lodgroup = (LODGroup)component;
+                string lod_prefix = "unity:LODGroup:lod";
+                var lods = lodgroup.GetLODs();
+                for (int i = 0; i < lods.Length; i++)
+                {
+                    var attrName = new pxr.TfToken(lod_prefix + i.ToString());
+                    var lod_targets = lods[i].renderers.Select(renderer => renderer.gameObject); // multiple game object per LOD
+                    var targets_name = lod_targets.Select(target => target.name).ToArray();
+
+                    pxr.VtStringArray usd_value = new pxr.VtStringArray((uint)targets_name.Length,"");
+                    for (int j = 0; j < targets_name.Length; j++) usd_value[j] = targets_name[j];
+                    prim.CreateAttribute(attrName, SdfValueTypeNames.StringArray).Set(usd_value);
+                }
+            }
+
+
+            //Debug.Log(sb.ToString());
 
       // TODO: Handle multiple components of the same type.
       var usdPrim = scene.Stage.GetPrimAtPath(new pxr.SdfPath(path));
@@ -169,7 +196,17 @@ namespace Unity.Formats.USD {
       }
     }
 
-  }
+    static string GetHierarchyPath(GameObject target_gameobject, GameObject root_gameobject)
+    {
+        // Get hierarchy path relative to root
+        var target_hier_transforms = target_gameobject.GetComponentsInParent<Transform>();
+        var root_hier_transforms = target_hier_transforms.TakeWhile(tf => tf.IsChildOf(root_gameobject.transform));
+        var rel_hier_transforms = root_hier_transforms.Take(root_hier_transforms.Count() - 1);
+        string rel_target_hier_path = string.Join("/", root_hier_transforms.Select(t => t.name).Reverse().ToArray());
+        return rel_target_hier_path;
+    }
+
+    }
 
 }
 #else
