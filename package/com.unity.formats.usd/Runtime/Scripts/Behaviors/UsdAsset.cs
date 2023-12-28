@@ -270,7 +270,7 @@ namespace Unity.Formats.USD {
               UnityEditor.PrefabUtility.GetPrefabObject(root));
 #else
       if (!UnityEditor.EditorUtility.IsPersistent(root)) {
-        var prefabStage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetPrefabStage(root);
+        var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(root);
         if (prefabStage != null) {
           if (!UnityEditor.PrefabUtility.IsPartOfPrefabInstance(root)) {
 #if UNITY_2020_1_OR_NEWER

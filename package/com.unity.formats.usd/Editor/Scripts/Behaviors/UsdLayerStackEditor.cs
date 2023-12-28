@@ -14,13 +14,13 @@
 
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.Experimental.AssetImporters;
+
 using USD.NET;
 
 namespace Unity.Formats.USD {
 
   [CustomEditor(typeof(UsdLayerStack))]
-  public class UsdLayerStackEditor : ScriptedImporterEditor {
+  public class UsdLayerStackEditor : UnityEditor.AssetImporters.ScriptedImporterEditor {
     public override void OnInspectorGUI() {
       var layerStack = (UsdLayerStack)this.target;
 
