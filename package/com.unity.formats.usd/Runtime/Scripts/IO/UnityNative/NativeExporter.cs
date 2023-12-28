@@ -17,67 +17,73 @@ using System.Linq;
 using UnityEngine;
 using USD.NET;
 using USD.NET.Unity;
-
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace Unity.Formats.USD {
-  public class NativeExporter {
+namespace Unity.Formats.USD
+{
+    public class NativeExporter
+    {
+        // -------------------------------------------------------------------------------------------- //
+        // Serialize Unity to -> USD
+        // -------------------------------------------------------------------------------------------- //
 
-    // -------------------------------------------------------------------------------------------- //
-    // Serialize Unity to -> USD
-    // -------------------------------------------------------------------------------------------- //
+        /// <summary>
+        /// Exports the given game object to USD, via Unity SerializedObject.
+        /// Note that this is an experimental work in progress.
+        /// </summary>
+        public static void ExportObject(ObjectContext objContext,
+            ExportContext exportContext)
+        {
+            if (!exportContext.exportNative)
+            {
+                return;
+            }
 
-    /// <summary>
-    /// Exports the given game object to USD, via Unity SerializedObject.
-    /// Note that this is an experimental work in progress.
-    /// </summary>
-    public static void ExportObject(ObjectContext objContext,
-                                    ExportContext exportContext) {
-      if (!exportContext.exportNative) {
-        return;
-      }
-      var prim = exportContext.scene.GetPrimAtPath(objContext.path);
-      ObjectToUsd(objContext.gameObject, prim, exportContext.scene);
-            //Debug.Log("Adding Components");
-      foreach (Component comp in objContext.gameObject.GetComponents(typeof(Component))) {
-        ComponentToUsd(comp, objContext.path, exportContext.scene);
-      }
-    }
+            var prim = exportContext.scene.GetPrimAtPath(objContext.path);
+            ObjectToUsd(objContext.gameObject, prim, exportContext.scene);
+            foreach (Component comp in objContext.gameObject.GetComponents(typeof(Component)))
+            {
+                ComponentToUsd(comp, objContext.path, exportContext.scene);
+            }
+        }
 
-    /// <summary>
-    /// Exports a single GameObject to USD, does not export components.
-    /// </summary>
-    static void ObjectToUsd(GameObject gameObj, pxr.UsdPrim prim, Scene scene) {
-      var obj = new SerializedObject(gameObj);
-      var sb = new System.Text.StringBuilder();
-      var path = prim.GetPath().ToString();
-      sb.AppendLine("Visited: " + path);
+        /// <summary>
+        /// Exports a single GameObject to USD, does not export components.
+        /// </summary>
+        static void ObjectToUsd(GameObject gameObj, pxr.UsdPrim prim, Scene scene)
+        {
+            var obj = new SerializedObject(gameObj);
+            var sb = new System.Text.StringBuilder();
+            var path = prim.GetPath().ToString();
+            sb.AppendLine("Visited: " + path);
 
       prim.SetCustomDataByKey(new pxr.TfToken("unity:name"), new pxr.TfToken(gameObj.name));
 
+            // Gaussian: Add Unity Hierarchy path
             var gameObj_root = gameObj.transform.root.gameObject;
             string path_relto_root = GetHierarchyPath(gameObj, gameObj.transform.root.gameObject);
             prim.SetCustomDataByKey(new pxr.TfToken("unity:path"), new pxr.TfToken(path_relto_root));
 
-      var itr = obj.GetIterator();
-      itr.Next(true);
-      PropertyToUsd(path, "", scene, itr, sb);
-    }
+            var itr = obj.GetIterator();
+            itr.Next(true);
+            PropertyToUsd(path, "", scene, itr, sb);
+        }
 
-    /// <summary>
-    /// Exports a single component to USD, does not include the parent GameObject.
-    /// </summary>
-    static void ComponentToUsd(Component component, string path, Scene scene) {
-      var obj = new SerializedObject(component);
-      var sb = new System.Text.StringBuilder();
-      var propPrefix = component.GetType().Name;
+        /// <summary>
+        /// Exports a single component to USD, does not include the parent GameObject.
+        /// </summary>
+        static void ComponentToUsd(Component component, string path, Scene scene)
+        {
+            var obj = new SerializedObject(component);
+            var sb = new System.Text.StringBuilder();
+            var propPrefix = component.GetType().Name;
 
-      sb.AppendLine("Visited: " + path + "." + propPrefix);
+            sb.AppendLine("Visited: " + path + "." + propPrefix);
 
-      var itr = obj.GetIterator();
-      itr.Next(true);
-      PropertyToUsd(path, propPrefix, scene, itr, sb);
+            var itr = obj.GetIterator();
+            itr.Next(true);
+            PropertyToUsd(path, propPrefix, scene, itr, sb);
 
             if (propPrefix == "LODGroup")
             {
@@ -102,101 +108,121 @@ namespace Unity.Formats.USD {
 
             //Debug.Log(sb.ToString());
 
-      // TODO: Handle multiple components of the same type.
-      var usdPrim = scene.Stage.GetPrimAtPath(new pxr.SdfPath(path));
-      var attr = usdPrim.CreateAttribute(
-          new pxr.TfToken("unity:component:" + component.GetType().Name + ":type"),
-          SdfValueTypeNames.String);
+            // TODO: Handle multiple components of the same type.
+            var usdPrim = scene.Stage.GetPrimAtPath(new pxr.SdfPath(path));
+            var attr = usdPrim.CreateAttribute(
+                new pxr.TfToken("unity:component:" + component.GetType().Name + ":type"),
+                SdfValueTypeNames.String);
 
-      attr.Set(component.GetType().AssemblyQualifiedName);
-    }
-
-
-    /// <summary>
-    /// Writes SerializedProperty to USD, traversing all nested properties.
-    /// </summary>
-    static void PropertyToUsd(string path,
-                              string propPrefix,
-                              Scene scene,
-                              SerializedProperty prop,
-                              System.Text.StringBuilder sb) {
-      string prefix = "";
-      try {
-        var nameStack = new List<string>();
-        nameStack.Add("unity");
-        if (!string.IsNullOrEmpty(propPrefix)) {
-          nameStack.Add(propPrefix);
+            attr.Set(component.GetType().AssemblyQualifiedName);
         }
 
-        string lastName = "";
-        int lastDepth = 0;
 
-        while (prop.Next(prop.propertyType == SerializedPropertyType.Generic && !prop.isArray)) {
-          string tabIn = "";
-          for (int i = 0; i < prop.depth; i++) {
-            tabIn += "  ";
-          }
+        /// <summary>
+        /// Writes SerializedProperty to USD, traversing all nested properties.
+        /// </summary>
+        static void PropertyToUsd(string path,
+            string propPrefix,
+            Scene scene,
+            SerializedProperty prop,
+            System.Text.StringBuilder sb)
+        {
+            string prefix = "";
+            try
+            {
+                var nameStack = new List<string>();
+                nameStack.Add("unity");
+                if (!string.IsNullOrEmpty(propPrefix))
+                {
+                    nameStack.Add(propPrefix);
+                }
 
-          if (prop.depth > lastDepth) {
-            Debug.Assert(lastName != "");
-            nameStack.Add(lastName);
-          } else if (prop.depth < lastDepth) {
-            nameStack.RemoveRange(nameStack.Count - (lastDepth - prop.depth), lastDepth - prop.depth);
-          }
-          lastDepth = prop.depth;
-          lastName = prop.name;
+                string lastName = "";
+                int lastDepth = 0;
 
-          if (nameStack.Count > 0) {
-            prefix = string.Join(":", nameStack.ToArray());
-            prefix += ":";
-          } else {
-            prefix = "";
-          }
+                while (prop.Next(prop.propertyType == SerializedPropertyType.Generic && !prop.isArray))
+                {
+                    string tabIn = "";
+                    for (int i = 0; i < prop.depth; i++)
+                    {
+                        tabIn += "  ";
+                    }
 
-          sb.Append(tabIn + prefix + prop.name + "[" + prop.propertyType.ToString() + "] = ");
-          if (prop.isArray && prop.propertyType != SerializedPropertyType.String) {
-            // TODO.
-            sb.AppendLine("ARRAY");
-          } else if (prop.propertyType == SerializedPropertyType.Generic) {
-            sb.AppendLine("Generic");
-          } else if (prop.propertyType == SerializedPropertyType.AnimationCurve ||
-                     prop.propertyType == SerializedPropertyType.Gradient) {
-            // TODO.
-            sb.AppendLine(NativeSerialization.ValueToString(prop));
-          } else {
-            sb.AppendLine(NativeSerialization.ValueToString(prop));
-            var vtValue = NativeSerialization.PropToVtValue(prop);
-            var primPath = new pxr.SdfPath(path);
-            var attrName = new pxr.TfToken(prefix + prop.name);
-            /*
-            var oldPrim = context.prevScene.Stage.GetPrimAtPath(primPath);
-            pxr.VtValue oldVtValue = null;
-            if (oldPrim.IsValid()) {
-              var oldAttr = oldPrim.GetAttribute(attrName);
-              if (oldAttr.IsValid()) {
-                oldVtValue = oldAttr.Get(0);
-              }
+                    if (prop.depth > lastDepth)
+                    {
+                        Debug.Assert(lastName != "");
+                        nameStack.Add(lastName);
+                    }
+                    else if (prop.depth < lastDepth)
+                    {
+                        nameStack.RemoveRange(nameStack.Count - (lastDepth - prop.depth), lastDepth - prop.depth);
+                    }
+
+                    lastDepth = prop.depth;
+                    lastName = prop.name;
+
+                    if (nameStack.Count > 0)
+                    {
+                        prefix = string.Join(":", nameStack.ToArray());
+                        prefix += ":";
+                    }
+                    else
+                    {
+                        prefix = "";
+                    }
+
+                    sb.Append(tabIn + prefix + prop.name + "[" + prop.propertyType.ToString() + "] = ");
+                    if (prop.isArray && prop.propertyType != SerializedPropertyType.String)
+                    {
+                        // TODO.
+                        sb.AppendLine("ARRAY");
+                    }
+                    else if (prop.propertyType == SerializedPropertyType.Generic)
+                    {
+                        sb.AppendLine("Generic");
+                    }
+                    else if (prop.propertyType == SerializedPropertyType.AnimationCurve ||
+                             prop.propertyType == SerializedPropertyType.Gradient)
+                    {
+                        // TODO.
+                        sb.AppendLine(NativeSerialization.ValueToString(prop));
+                    }
+                    else
+                    {
+                        sb.AppendLine(NativeSerialization.ValueToString(prop));
+                        var vtValue = NativeSerialization.PropToVtValue(prop);
+                        var primPath = new pxr.SdfPath(path);
+                        var attrName = new pxr.TfToken(prefix + prop.name);
+                        /*
+                        var oldPrim = context.prevScene.Stage.GetPrimAtPath(primPath);
+                        pxr.VtValue oldVtValue = null;
+                        if (oldPrim.IsValid()) {
+                          var oldAttr = oldPrim.GetAttribute(attrName);
+                          if (oldAttr.IsValid()) {
+                            oldVtValue = oldAttr.Get(0);
+                          }
+                        }
+            
+                        if (oldVtValue != null && vtValue == oldVtValue) {
+                          Debug.Log("skipping: " + prop.name);
+                          continue;
+                        }
+                        */
+
+                        var sdfType = NativeSerialization.GetSdfType(prop);
+                        var prim = scene.GetPrimAtPath(primPath);
+                        var attr = prim.CreateAttribute(attrName, sdfType);
+                        attr.Set(vtValue);
+                    }
+                }
             }
-
-            if (oldVtValue != null && vtValue == oldVtValue) {
-              Debug.Log("skipping: " + prop.name);
-              continue;
+            catch
+            {
+                Debug.LogWarning("Failed on: " + path + "." + prefix + prop.name);
+                throw;
             }
-            */
-
-            var sdfType = NativeSerialization.GetSdfType(prop);
-            var prim = scene.GetPrimAtPath(primPath);
-            var attr = prim.CreateAttribute(attrName, sdfType);
-            attr.Set(vtValue);
-          }
         }
-      } catch {
-        Debug.LogWarning("Failed on: " + path + "." + prefix + prop.name);
-        throw;
-      }
-    }
-
-    static string GetHierarchyPath(GameObject target_gameobject, GameObject root_gameobject)
+      static string GetHierarchyPath(GameObject target_gameobject, GameObject root_gameobject)
     {
         // Get hierarchy path relative to root
         var target_hier_transforms = target_gameobject.GetComponentsInParent<Transform>();
@@ -207,7 +233,6 @@ namespace Unity.Formats.USD {
     }
 
     }
-
 }
 #else
 namespace Unity.Formats.USD {
