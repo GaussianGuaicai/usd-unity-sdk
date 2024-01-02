@@ -297,7 +297,8 @@ namespace Unity.Formats.USD
             string usdShaderPath,
             Material mat,
             UnityPreviewSurfaceSample surface,
-            string destTexturePath)
+            string destTexturePath,
+            bool forceOpacity = true) // Gaussian: Force Opacity export, regaredless of _Mode
         {
             Color c;
 
@@ -368,7 +369,7 @@ namespace Unity.Formats.USD
                 shaderMode = (StandardShaderBlendMode) mat.GetFloat("_Mode");
             }
 
-            if (shaderMode != StandardShaderBlendMode.Opaque)
+            if (shaderMode != StandardShaderBlendMode.Opaque || forceOpacity)
             {
                 if (mat.HasProperty("_MainTex") && mat.GetTexture("_MainTex") != null)
                 {
@@ -395,8 +396,9 @@ namespace Unity.Formats.USD
                 surface.opacity.defaultValue = 1.0f;
             }
 
-            if (shaderMode == StandardShaderBlendMode.Cutout && mat.HasProperty("_Cutoff"))
+            if (shaderMode == StandardShaderBlendMode.Cutout || forceOpacity)
             {
+                if(mat.HasProperty("_Cutoff"))
                 surface.opacityThreshold.defaultValue = mat.GetFloat("_Cutoff");
             }
 
