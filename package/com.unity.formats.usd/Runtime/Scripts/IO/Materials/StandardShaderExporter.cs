@@ -197,7 +197,7 @@ namespace Unity.Formats.USD
             }
             else
             {
-                surface.metallic.defaultValue = .5f;
+                surface.metallic.defaultValue = 0.0f;
             }
 
             // Gross heuristics to detect workflow.
@@ -236,7 +236,7 @@ namespace Unity.Formats.USD
                 }
                 else
                 {
-                    surface.roughness.defaultValue = 0.5f;
+                    surface.roughness.defaultValue = 1.0f;
                 }
 
                 surface.useSpecularWorkflow.defaultValue = 1;
@@ -262,7 +262,7 @@ namespace Unity.Formats.USD
                 }
                 else
                 {
-                    surface.metallic.defaultValue = .5f;
+                    surface.metallic.defaultValue = 0.0f;
                 }
 
                 if (material.HasProperty("_Glossiness"))
@@ -271,7 +271,7 @@ namespace Unity.Formats.USD
                 }
                 else
                 {
-                    surface.roughness.defaultValue = 0.5f;
+                    surface.roughness.defaultValue = 1.0f;
                 }
             }
 
@@ -289,7 +289,7 @@ namespace Unity.Formats.USD
             }
             else
             {
-                surface.roughness.defaultValue = 0.5f;
+                surface.roughness.defaultValue = 1.0f;
             }
         }
 
