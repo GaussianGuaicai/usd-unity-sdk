@@ -183,8 +183,8 @@ namespace Unity.Formats.USD
 
             if (Mesh_canAccess == null)
             {
-                Mesh_canAccess = typeof(Mesh).GetProperty("canAccess",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetMethod;
+                Mesh_canAccess = typeof(Mesh).GetMethod("canAccess",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             }
 
             if (Mesh_canAccess != null)

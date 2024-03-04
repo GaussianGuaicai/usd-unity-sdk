@@ -39,12 +39,13 @@ namespace Unity.Formats.USD
             return sampleFolderRelativePath;
         }
 
-        /// <summary>
-        /// Utils function to get the relative path of the current caller with current Unity directory as a base folder
-        /// </summary>
-        public static string GetCallerRelativeToProjectFolderPath([CallerFilePath] string filePath = "")
-        {
-            return GetRelativeFolderPath(Directory.GetCurrentDirectory(), filePath);
-        }
+        //// Gaussian: this method using [CallerFilePath] which not available in .NET3.5, and no other reference this.
+        // /// <summary>
+        // /// Utils function to get the relative path of the current caller with current Unity directory as a base folder
+        // /// </summary>
+        // public static string GetCallerRelativeToProjectFolderPath([CallerFilePath] string filePath = "")
+        // {
+        //     return GetRelativeFolderPath(Directory.GetCurrentDirectory(), filePath);
+        // }
     }
 }

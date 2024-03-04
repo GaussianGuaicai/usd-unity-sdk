@@ -55,7 +55,13 @@ namespace Unity.Formats.USD
             get { return ClipCaps.None; }
         }
 
-        public bool IsUSDZ => !string.IsNullOrEmpty(m_usdFile) && m_usdFile.ToLowerInvariant().EndsWith(".usdz");
+        public bool IsUSDZ
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(m_usdFile) && m_usdFile.ToLowerInvariant().EndsWith(".usdz");
+            }
+        }
 
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
