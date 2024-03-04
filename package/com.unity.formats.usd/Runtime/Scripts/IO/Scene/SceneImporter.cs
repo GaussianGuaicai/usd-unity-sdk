@@ -19,6 +19,8 @@ using UnityEngine.Profiling;
 using USD.NET;
 using USD.NET.Unity;
 using Unity.Jobs;
+using pxr;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using System.IO;
@@ -554,6 +556,40 @@ namespace Unity.Formats.USD
                         GameObject go = primMap[pathAndSample.path];
                         NativeImporter.ImportObject(scene, go, scene.GetPrimAtPath(pathAndSample.path), importOptions);
                         XformImporter.BuildXform(pathAndSample.path, pathAndSample.sample, go, importOptions, scene);
+
+                        var path = pathAndSample.path;
+                        var prim = scene.GetPrimAtPath(path);
+                        TfToken attrName = new TfToken("lmw:type");
+                        if(prim.HasAttribute(attrName))
+                        {
+                            var attrib_lmw_type = prim.GetAttribute(attrName);
+                            string lmw_type = attrib_lmw_type.Get();
+                            if(lmw_type == "light")
+                            {
+                                Light light = go.AddComponent<Light>();
+                                GfVec3f color = prim.GetAttribute(new TfToken("inputs:color")).Get();
+                                UsdAttribute attr_shadow = prim.GetAttribute(new TfToken("inputs:shadow:enable"));
+
+                                float intensity = prim.GetAttribute(new TfToken("inputs:intensity")).Get();
+                                int shadow = attr_shadow.IsValid() ? (int)attr_shadow.Get() : 1;
+                                float angle = prim.GetAttribute(new TfToken("inputs:angle")).Get();
+                                
+                                // Light Parametering
+                                light.color = new Color(color[0],color[1],color[2]);
+                                light.intensity = intensity;
+                                light.shadows = shadow==1 ? LightShadows.Soft : LightShadows.None;
+                                light.shadowAngle = angle;
+                                
+                                // Light Type
+                                string light_type = prim.GetAttribute(new TfToken("lmw:light_type")).Get();
+                                if(light_type=="DistantLight") light.type = LightType.Directional;
+                                else if (light_type=="SphereLight") light.type = LightType.Point;
+                                else if (light_type=="RectLight") light.type = LightType.Area;
+                                else if (light_type=="DisktLight") light.type = LightType.Spot;
+                                else Debug.LogWarningFormat("Light: {0} with type {1} is not support",path,light_type);
+                            }
+                        }
+
                     }
                     catch (System.Exception ex)
                     {
