@@ -197,7 +197,7 @@ namespace Unity.Formats.USD
             }
             else
             {
-                surface.metallic.defaultValue = .5f;
+                surface.metallic.defaultValue = 0.0f;
             }
 
             // Gross heuristics to detect workflow.
@@ -236,7 +236,7 @@ namespace Unity.Formats.USD
                 }
                 else
                 {
-                    surface.roughness.defaultValue = 0.5f;
+                    surface.roughness.defaultValue = 1.0f;
                 }
 
                 surface.useSpecularWorkflow.defaultValue = 1;
@@ -262,7 +262,7 @@ namespace Unity.Formats.USD
                 }
                 else
                 {
-                    surface.metallic.defaultValue = .5f;
+                    surface.metallic.defaultValue = 0.0f;
                 }
 
                 if (material.HasProperty("_Glossiness"))
@@ -271,7 +271,7 @@ namespace Unity.Formats.USD
                 }
                 else
                 {
-                    surface.roughness.defaultValue = 0.5f;
+                    surface.roughness.defaultValue = 1.0f;
                 }
             }
 
@@ -289,7 +289,7 @@ namespace Unity.Formats.USD
             }
             else
             {
-                surface.roughness.defaultValue = 0.5f;
+                surface.roughness.defaultValue = 1.0f;
             }
         }
 
@@ -297,7 +297,8 @@ namespace Unity.Formats.USD
             string usdShaderPath,
             Material mat,
             UnityPreviewSurfaceSample surface,
-            string destTexturePath)
+            string destTexturePath,
+            bool forceOpacity = true) // Gaussian: Force Opacity export, regaredless of _Mode
         {
             Color c;
 
@@ -368,7 +369,7 @@ namespace Unity.Formats.USD
                 shaderMode = (StandardShaderBlendMode) mat.GetFloat("_Mode");
             }
 
-            if (shaderMode != StandardShaderBlendMode.Opaque)
+            if (shaderMode != StandardShaderBlendMode.Opaque || forceOpacity)
             {
                 if (mat.HasProperty("_MainTex") && mat.GetTexture("_MainTex") != null)
                 {
@@ -395,8 +396,9 @@ namespace Unity.Formats.USD
                 surface.opacity.defaultValue = 1.0f;
             }
 
-            if (shaderMode == StandardShaderBlendMode.Cutout && mat.HasProperty("_Cutoff"))
+            if (shaderMode == StandardShaderBlendMode.Cutout || forceOpacity)
             {
+                if(mat.HasProperty("_Cutoff"))
                 surface.opacityThreshold.defaultValue = mat.GetFloat("_Cutoff");
             }
 
