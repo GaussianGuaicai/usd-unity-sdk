@@ -23,11 +23,12 @@ namespace Unity.Formats.USD
             string usdShaderPath,
             Material material,
             UnityPreviewSurfaceSample surface,
-            string destTexturePath)
+            string destTexturePath,
+            bool forceOpacity)
         {
             Color c;
 
-            ExportStandardCommon(scene, usdShaderPath, material, surface, destTexturePath);
+            ExportStandardCommon(scene, usdShaderPath, material, surface, destTexturePath,forceOpacity);
             surface.useSpecularWorkflow.defaultValue = 1;
             surface.metallic.defaultValue = 0;
 
@@ -72,9 +73,10 @@ namespace Unity.Formats.USD
             string usdShaderPath,
             Material material,
             UnityPreviewSurfaceSample surface,
-            string destTexturePath)
+            string destTexturePath,
+            bool forceOpacity)
         {
-            ExportStandardCommon(scene, usdShaderPath, material, surface, destTexturePath);
+            ExportStandardCommon(scene, usdShaderPath, material, surface, destTexturePath,forceOpacity);
             surface.useSpecularWorkflow.defaultValue = 0;
 
             if (material.HasProperty("_MetallicGlossMap") && material.GetTexture("_MetallicGlossMap") != null)
@@ -129,9 +131,10 @@ namespace Unity.Formats.USD
             string usdShaderPath,
             Material material,
             UnityPreviewSurfaceSample surface,
-            string destTexturePath)
+            string destTexturePath,
+            bool forceOpacity)
         {
-            ExportStandardCommon(scene, usdShaderPath, material, surface, destTexturePath);
+            ExportStandardCommon(scene, usdShaderPath, material, surface, destTexturePath,forceOpacity);
             surface.useSpecularWorkflow.defaultValue = 0;
 
             if (material.HasProperty("_MetallicGlossMap") && material.GetTexture("_MetallicGlossMap") != null)
@@ -174,10 +177,11 @@ namespace Unity.Formats.USD
             string usdShaderPath,
             Material material,
             UnityPreviewSurfaceSample surface,
-            string destTexturePath)
+            string destTexturePath,
+            bool forceOpacity)
         {
             Color c;
-            ExportStandardCommon(scene, usdShaderPath, material, surface, destTexturePath);
+            ExportStandardCommon(scene, usdShaderPath, material, surface, destTexturePath,forceOpacity);
 
             if (material.HasProperty("_SpecColor"))
             {
@@ -298,7 +302,7 @@ namespace Unity.Formats.USD
             Material mat,
             UnityPreviewSurfaceSample surface,
             string destTexturePath,
-            bool forceOpacity = true) // Gaussian: Force Opacity export, regaredless of _Mode
+            bool forceOpacity) // Gaussian: Force Opacity export, regaredless of _Mode
         {
             Color c;
 
@@ -378,7 +382,7 @@ namespace Unity.Formats.USD
                         scale.w = mat.GetColor("_BaseColor").linear.a;
                     var newTex = SetupTexture(scene, usdShaderPath, mat, surface, scale, destTexturePath, "_MainTex",
                         "a");
-                    surface.opacity.SetConnectedPath(newTex);
+                    surface.opacity.SetConnectedPath(newTex); //TODO: this not always true, sometime MainTex dont have alpha channel.
                 }
                 else if (mat.HasProperty("_Color"))
                 {

@@ -23,6 +23,7 @@ namespace Unity.Formats.USD
 {
     public class UsdMenu : MonoBehaviour
     {
+        private static bool forceOpacity = false;
         public static Scene InitForSave(string defaultName, string fileExtension = "usd,usda,usdc")
         {
             var filePath = EditorUtility.SaveFilePanel("Export USD File", "", defaultName, fileExtension);
@@ -75,6 +76,13 @@ namespace Unity.Formats.USD
         static void MenuExportSelectedWithChildren()
         {
             ExportSelected(BasisTransformation.SlowAndSafe);
+        }
+
+        [MenuItem("USD/Force Opacity Export",false)]
+        static void ForceOpacityExport()
+        {
+            forceOpacity = forceOpacity ? false : true;
+            Menu.SetChecked("USD/Force Opacity Export",forceOpacity);
         }
 
         [MenuItem("USD/Export Transform Overrides", true)]
@@ -205,7 +213,8 @@ namespace Unity.Formats.USD
                 {
                     SceneExporter.Export(go, scene, basisTransform,
                         exportUnvarying: true, zeroRootTransform: false,
-                        exportMonoBehaviours: exportMonoBehaviours);
+                        exportMonoBehaviours: exportMonoBehaviours,
+                        forceOpacity: forceOpacity);
                 }
                 catch (System.Exception ex)
                 {

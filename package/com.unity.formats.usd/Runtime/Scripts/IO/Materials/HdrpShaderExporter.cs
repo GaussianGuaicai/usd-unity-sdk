@@ -25,7 +25,8 @@ namespace Unity.Formats.USD
             string usdShaderPath,
             Material material,
             PreviewSurfaceSample surface,
-            string destTexturePath)
+            string destTexturePath,
+            bool forceOpacity)
         {
             Color c;
 
