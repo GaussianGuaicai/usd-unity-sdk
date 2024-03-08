@@ -556,40 +556,6 @@ namespace Unity.Formats.USD
                         GameObject go = primMap[pathAndSample.path];
                         NativeImporter.ImportObject(scene, go, scene.GetPrimAtPath(pathAndSample.path), importOptions);
                         XformImporter.BuildXform(pathAndSample.path, pathAndSample.sample, go, importOptions, scene);
-
-                        var path = pathAndSample.path;
-                        var prim = scene.GetPrimAtPath(path);
-                        TfToken attrName = new TfToken("lmw:type");
-                        if(prim.HasAttribute(attrName))
-                        {
-                            var attrib_lmw_type = prim.GetAttribute(attrName);
-                            string lmw_type = attrib_lmw_type.Get();
-                            if(lmw_type == "light")
-                            {
-                                Light light = go.AddComponent<Light>();
-                                GfVec3f color = prim.GetAttribute(new TfToken("inputs:color")).Get();
-                                UsdAttribute attr_shadow = prim.GetAttribute(new TfToken("inputs:shadow:enable"));
-
-                                float intensity = prim.GetAttribute(new TfToken("inputs:intensity")).Get();
-                                int shadow = attr_shadow.IsValid() ? (int)attr_shadow.Get() : 1;
-                                float angle = prim.GetAttribute(new TfToken("inputs:angle")).Get();
-                                
-                                // Light Parametering
-                                light.color = new Color(color[0],color[1],color[2]);
-                                light.intensity = intensity;
-                                light.shadows = shadow==1 ? LightShadows.Soft : LightShadows.None;
-                                light.shadowAngle = angle;
-                                
-                                // Light Type
-                                string light_type = prim.GetAttribute(new TfToken("lmw:light_type")).Get();
-                                if(light_type=="DistantLight") light.type = LightType.Directional;
-                                else if (light_type=="SphereLight") light.type = LightType.Point;
-                                else if (light_type=="RectLight") light.type = LightType.Area;
-                                else if (light_type=="DisktLight") light.type = LightType.Spot;
-                                else Debug.LogWarningFormat("Light: {0} with type {1} is not support",path,light_type);
-                            }
-                        }
-
                     }
                     catch (System.Exception ex)
                     {
@@ -781,6 +747,19 @@ namespace Unity.Formats.USD
                         ResetTimer(timer);
                     }
                 }
+
+                Profiler.EndSample();
+            }
+
+            // Lights.
+            if (importOptions.importLights)
+            {
+                Profiler.BeginSample("USD: Lights");
+
+                importLights<DistantLightSample>(primMap.DirectionalLights, scene, importOptions, primMap);
+                importLights<SphereLightSample>(primMap.SphereLights, scene, importOptions, primMap);
+                importLights<RectLightSample>(primMap.RectLights, scene, importOptions, primMap);
+                importLights<DiskLightSample>(primMap.DiscLights, scene, importOptions, primMap);
 
                 Profiler.EndSample();
             }
@@ -1293,6 +1272,30 @@ namespace Unity.Formats.USD
             }
 
             Profiler.EndSample();
+        }
+
+        private static void importLights<T>(SdfPath[] dest, Scene scene, SceneImportOptions importOptions, PrimMap primMap) where T : LightSampleBase, new()
+        {
+            foreach (var pathAndSample in scene.ReadAll<T>(dest))
+            {
+                try
+                {
+                    GameObject go = primMap[pathAndSample.path];
+                    UsdPrim usdPrim = scene.GetPrimAtPath(pathAndSample.path);
+                    NativeImporter.ImportObject(scene, go, usdPrim, importOptions);
+                    XformImporter.BuildXform(pathAndSample.path, pathAndSample.sample, go, importOptions, scene);
+
+                    if (scene.AccessMask == null || scene.IsPopulatingAccessMask)
+                    {
+                        LightImporter<T>.BuildLight(pathAndSample.sample, go, usdPrim, importOptions);
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogException(
+                        new ImportException("Error processing light <" + pathAndSample.path + ">", ex));
+                }
+            }
         }
 
         private static bool ShouldYield(float targetTime, System.Diagnostics.Stopwatch timer)
