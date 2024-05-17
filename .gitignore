@@ -67,3 +67,6 @@ inst-dbg/
 *.code-workspace
 .vscode
 package/com.unity.formats.usd/TestRunnerOptions.json.meta
+
+# Unity
+*.meta
