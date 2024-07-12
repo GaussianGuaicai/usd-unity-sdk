@@ -59,6 +59,7 @@ namespace Unity.Formats.USD
         public Scene scene;
         public Transform exportRoot;
         public bool exportMaterials = true;
+        public bool forceOpacity = true;
         public bool exportNative = false;
         public float scale = 1.0f;
 
@@ -121,13 +122,15 @@ namespace Unity.Formats.USD
             bool exportUnvarying,
             bool zeroRootTransform,
             bool exportMaterials = false,
-            bool exportMonoBehaviours = false)
+            bool exportMonoBehaviours = false,
+            bool forceOpacity = false)
         {
             var context = new ExportContext();
             context.scene = scene;
             context.basisTransform = basisTransform;
             context.exportRoot = root.transform.parent;
             context.exportNative = true; // Gaussian: To export all gameobject components and its properties
+            context.forceOpacity = forceOpacity;
             SyncExportContext(root, context);
 
             // Since this is a one-shot convenience function, we will automatically split the export
@@ -218,7 +221,7 @@ namespace Unity.Formats.USD
 
                     try
                     {
-                        MaterialExporter.ExportMaterial(scene, kvp.Key, kvp.Value);
+                        MaterialExporter.ExportMaterial(scene, kvp.Key, kvp.Value,context.forceOpacity);
                     }
                     catch (Exception ex)
                     {

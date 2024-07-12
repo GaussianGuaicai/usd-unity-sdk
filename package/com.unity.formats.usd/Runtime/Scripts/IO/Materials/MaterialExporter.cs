@@ -25,7 +25,8 @@ namespace Unity.Formats.USD
             string usdShaderPath,
             Material material,
             UnityPreviewSurfaceSample surface,
-            string destTexturePath);
+            string destTexturePath,
+            bool forceOpacity);
 
         public static readonly string kStandardFallbackHandler = "USD.NET/Fallback/Standard";
         public static readonly string kHdrpFallbackHandler = "USD.NET/Fallback/HDRP";
@@ -70,7 +71,7 @@ namespace Unity.Formats.USD
                 StandardShaderExporter.ExportGeneric);
         }
 
-        public static void ExportMaterial(Scene scene, Material mat, string usdMaterialPath)
+        public static void ExportMaterial(Scene scene, Material mat, string usdMaterialPath, bool forceOpacity)
         {
             string shaderPath = usdMaterialPath + "/PreviewSurface";
 
@@ -107,7 +108,7 @@ namespace Unity.Formats.USD
             try
             {
                 scene.Time = null;
-                handler(scene, shaderPath, mat, shader, texPath);
+                handler(scene, shaderPath, mat, shader, texPath,forceOpacity);
                 scene.Write(shaderPath, shader);
             }
             finally

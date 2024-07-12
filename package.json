@@ -21,12 +21,13 @@
       "usdz",
       "pipeline"
     ],
-    "name": "com.unity.formats.usd",
+    "name": "com.garena.ta.unity.formats.usd",
     "repoPackagePath": "package/com.unity.formats.usd",
     "repository": {
         "type": "git",
         "url": "ssh://git@github.com:Unity-Technologies/usd-unity-sdk.git"
     },
     "unity": "2019.4",
-    "version": "2.0.0-exp.1"
+    "usd-unity-sdk-version": "2.0.0-exp.1",
+    "version": "1.0.0"
 }

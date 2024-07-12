@@ -66,5 +66,7 @@ TestProject/Assets/Samples*
 inst-dbg/
 *.code-workspace
 .vscode
-*.meta
 package/com.unity.formats.usd/TestRunnerOptions.json.meta
+
+# Unity
+*.meta
