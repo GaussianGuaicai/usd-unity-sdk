@@ -391,7 +391,12 @@ namespace Unity.Formats.USD
                         {
                             // Under slow and safe export, index 0 and 1 are swapped.
                             // This swap will not be present in the subMesh indices, so must be undone here.
-                            faceTable.Add(new Vector3(tris[i + 1], tris[i], tris[i + 2]), i / 3);
+                            //faceTable.Add(new Vector3(tris[i + 1], tris[i], tris[i + 2]), i / 3);
+                            var key = new Vector3(tris[i + 1], tris[i], tris[i + 2]);
+                            if (!faceTable.ContainsKey(key))
+                            {
+                                faceTable.Add(key, i / 3);
+                            }
                         }
                     }
 
