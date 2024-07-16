@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using UnityEngine;
 using USD.NET;
 
@@ -19,6 +20,8 @@ namespace Unity.Formats.USD
 {
     public class StandardShaderExporter : ShaderExporterBase
     {
+        private static List<string> MainTextureKeywords = new List<string>{"_MainTex","_BaseMap"};
+
         public static void ExportStandardSpecular(Scene scene,
             string usdShaderPath,
             Material material,
@@ -339,13 +342,21 @@ namespace Unity.Formats.USD
                 }
             }
 #endif
-
-            if (mat.HasProperty("_MainTex") && mat.GetTexture("_MainTex") != null)
+            string mian_tex_keyword = "";
+            foreach (var key in MainTextureKeywords)
+            {
+                if (mat.HasProperty(key) && mat.GetTexture(key) != null)
+                {
+                    mian_tex_keyword = key;
+                    break;
+                }
+            }
+            if (!string.IsNullOrEmpty(mian_tex_keyword))
             {
                 var scale = new Vector4(1, 1, 1, 1);
                 if (mat.HasProperty("_Color"))
                     scale = mat.GetColor("_Color").linear;
-                var newTex = SetupTexture(scene, usdShaderPath, mat, surface, scale, destTexturePath, "_MainTex",
+                var newTex = SetupTexture(scene, usdShaderPath, mat, surface, scale, destTexturePath, mian_tex_keyword,
                     "rgb");
                 surface.diffuseColor.SetConnectedPath(newTex);
             }
@@ -375,12 +386,12 @@ namespace Unity.Formats.USD
 
             if (shaderMode != StandardShaderBlendMode.Opaque || forceOpacity)
             {
-                if (mat.HasProperty("_MainTex") && mat.GetTexture("_MainTex") != null)
+                if (!string.IsNullOrEmpty(mian_tex_keyword))
                 {
                     var scale = Vector4.one;
                     if (mat.HasProperty("_BaseColor"))
                         scale.w = mat.GetColor("_BaseColor").linear.a;
-                    var newTex = SetupTexture(scene, usdShaderPath, mat, surface, scale, destTexturePath, "_MainTex",
+                    var newTex = SetupTexture(scene, usdShaderPath, mat, surface, scale, destTexturePath, mian_tex_keyword,
                         "a");
                     surface.opacity.SetConnectedPath(newTex); //TODO: this not always true, sometime MainTex dont have alpha channel.
                 }
