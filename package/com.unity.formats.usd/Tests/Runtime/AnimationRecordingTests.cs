@@ -36,7 +36,8 @@ namespace Unity.Formats.USD.Tests
             clip.SetCurve("", typeof(Transform), "localPosition.x", curve);
 
             // create and setup the timeline
-            CreateTimeline(out var director, out var timeline);
+            var director = CreateTimeline();
+            var timeline = (TimelineAsset)director.playableAsset;
 
             var aTrack = timeline.CreateTrack<AnimationTrack>(null, "CubeAnimation");
             aTrack.CreateClip(clip).displayName = "CubeClip";
@@ -99,11 +100,12 @@ namespace Unity.Formats.USD.Tests
             m_filesToDelete.Clear();
         }
 
-        static void CreateTimeline(out PlayableDirector director, out TimelineAsset timeline)
+        PlayableDirector CreateTimeline()
         {
-            director = new GameObject("Timeline").AddComponent<PlayableDirector>();
-            timeline = ScriptableObject.CreateInstance<TimelineAsset>();
+            var director = new GameObject("Timeline").AddComponent<PlayableDirector>();
+            var timeline = ScriptableObject.CreateInstance<TimelineAsset>();
             director.playableAsset = timeline;
+            return director;
         }
     }
 }
