@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -140,6 +140,9 @@ namespace Unity.Formats.USD
                         var ext = System.IO.Path.GetExtension(srcPath).ToLowerInvariant();
                         if (ext == ".png" || ext == ".jpg" || ext == ".jpeg")
                         {
+                            // var srcPath_Info = new System.IO.FileInfo(srcPath);
+                            // if (srcPath_Info.IsReadOnly == true) srcPath_Info.IsReadOnly = false;
+                            if (System.IO.File.Exists(filePath)) new System.IO.FileInfo(filePath).IsReadOnly = false;
                             System.IO.File.Copy(srcPath, filePath, overwrite: true);
                             if (System.IO.File.Exists(filePath))
                             {
