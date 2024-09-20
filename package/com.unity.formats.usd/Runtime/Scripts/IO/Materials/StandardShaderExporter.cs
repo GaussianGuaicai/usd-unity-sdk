@@ -20,7 +20,7 @@ namespace Unity.Formats.USD
 {
     public class StandardShaderExporter : ShaderExporterBase
     {
-        private static List<string> MainTextureKeywords = new List<string>{"_MainTex","_BaseMap"};
+        private static List<string> MainTextureKeywords = new List<string>{"_MainTex","_BaseMap","_Splat0"};
 
         public static void ExportStandardSpecular(Scene scene,
             string usdShaderPath,
