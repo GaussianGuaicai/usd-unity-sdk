@@ -343,6 +343,7 @@ namespace Unity.Formats.USD
             }
 #endif
             string mian_tex_keyword = "";
+            Vector4 main_tex_scale = Vector4.one;
             foreach (var key in MainTextureKeywords)
             {
                 if (mat.HasProperty(key) && mat.GetTexture(key) != null)
@@ -353,10 +354,9 @@ namespace Unity.Formats.USD
             }
             if (!string.IsNullOrEmpty(mian_tex_keyword))
             {
-                var scale = new Vector4(1, 1, 1, 1);
                 if (mat.HasProperty("_Color"))
-                    scale = mat.GetColor("_Color").linear;
-                var newTex = SetupTexture(scene, usdShaderPath, mat, surface, scale, destTexturePath, mian_tex_keyword,
+                    main_tex_scale = mat.GetColor("_Color").linear;
+                var newTex = SetupTexture(scene, usdShaderPath, mat, surface, main_tex_scale, destTexturePath, mian_tex_keyword,
                     "rgb");
                 surface.diffuseColor.SetConnectedPath(newTex);
             }
@@ -388,10 +388,9 @@ namespace Unity.Formats.USD
             {
                 if (!string.IsNullOrEmpty(mian_tex_keyword))
                 {
-                    var scale = Vector4.one;
                     if (mat.HasProperty("_BaseColor"))
-                        scale.w = mat.GetColor("_BaseColor").linear.a;
-                    var newTex = SetupTexture(scene, usdShaderPath, mat, surface, scale, destTexturePath, mian_tex_keyword,
+                        main_tex_scale.w = mat.GetColor("_BaseColor").linear.a; // reuse main texture color scale here, otherwise this may override the color scale in main texture.
+                    var newTex = SetupTexture(scene, usdShaderPath, mat, surface, main_tex_scale, destTexturePath, mian_tex_keyword,
                         "a");
                     surface.opacity.SetConnectedPath(newTex); //TODO: this not always true, sometime MainTex dont have alpha channel.
                 }
