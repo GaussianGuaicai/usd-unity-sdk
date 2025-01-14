@@ -16,7 +16,6 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
-using USD.NET;
 
 namespace Unity.Formats.USD
 {
@@ -51,11 +50,16 @@ namespace Unity.Formats.USD
 
 #endif
 
-        [MenuItem("USD/Force Opacity Export",false)]
+        [MenuItem("USD/Force Opacity Export")]
         static void ForceOpacityExport()
         {
-            forceOpacity = forceOpacity ? false : true;
+            forceOpacity = !forceOpacity;
+        }
+        [MenuItem("USD/Force Opacity Export",true)]
+        static bool ForceOpacityExportValidate()
+        {
             Menu.SetChecked("USD/Force Opacity Export",forceOpacity);
+            return true;
         }
 
         static void ExportSelectedWithChildren(string fileExtensions)

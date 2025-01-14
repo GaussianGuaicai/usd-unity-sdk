@@ -97,7 +97,16 @@ namespace Unity.Formats.USD
                 for (int i = 0; i < lods.Length; i++)
                 {
                     var attrName = new pxr.TfToken(lod_prefix + i.ToString());
-                    var lod_targets = lods[i].renderers.Select(renderer => renderer.gameObject); // multiple game object per LOD
+                    List<GameObject> lod_targets = new List<GameObject>();
+                    foreach (var renderer in lods[i].renderers)
+                    {
+                        if(renderer==null)
+                        {
+                            Debug.LogWarningFormat(lodgroup,"{0} LOD Group contains invalid LOD renderers.",lodgroup.gameObject);
+                            continue;
+                        }
+                        lod_targets.Add(renderer.gameObject);
+                    }
                     var targets_name = lod_targets.Select(target => target.name).ToArray();
 
                     pxr.VtStringArray usd_value = new pxr.VtStringArray((uint)targets_name.Length,"");
