@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using USD.NET;
+using pxr;
 using USD.NET.Unity;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -103,6 +104,22 @@ namespace Unity.Formats.USD
                     for (int j = 0; j < targets_name.Length; j++) usd_value[j] = targets_name[j];
                     prim.CreateAttribute(attrName, SdfValueTypeNames.StringArray).Set(usd_value);
                 }
+            }
+            else if (component is LightProbeGroup)
+            {
+                var primPath = new SdfPath(path);
+                var prim = scene.GetPrimAtPath(primPath);
+
+                LightProbeGroup lightProbeGroup = (LightProbeGroup)component;
+                string probeGroup_prefix = "unity:LightProbeGroup:probePositions";
+                var probes = lightProbeGroup.probePositions;
+                VtVec3fArray usd_value = new VtVec3fArray((uint)probes.Count());
+                for (int i = 0; i < probes.Count(); i++)
+                {
+                    var correctProbe = UnityTypeConverter.ChangeBasis(probes[i]);
+                    usd_value[i] = new GfVec3f(correctProbe.x, correctProbe.y, correctProbe.z);
+                }
+                prim.CreateAttribute(new TfToken(probeGroup_prefix),SdfValueTypeNames.Float3Array).Set(usd_value);
             }
 
 

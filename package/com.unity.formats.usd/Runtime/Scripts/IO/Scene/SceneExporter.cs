@@ -624,7 +624,14 @@ namespace Unity.Formats.USD
                 CreateExportPlan(go, CreateSample<XformSample>(context), LightExporter.ExportXform, context);
                 CreateExportPlan(go, CreateSample<XformSample>(context), NativeExporter.ExportObject, context,insertFirst: false);
             }
+            else
+            {
+                // Export the transform hierarchy.
+                CreateExportPlan(go, CreateSample<XformSample>(context), XformExporter.ExportXform, context);
+                CreateExportPlan(go, CreateSample<XformSample>(context), NativeExporter.ExportObject, context,
+                    insertFirst: false);
             }
+        }
 
         static Transform MergeBonesBelowAnimator(Transform animator, ExportContext context)
         {
