@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -11,13 +11,10 @@ using USD.NET;
 
 namespace Unity.Formats.USD.Tests
 {
-    class AnimationRecordingTests
+    class AnimationRecordingTests : BaseFixtureRuntime
     {
-        readonly List<string> m_filesToDelete = new List<string>();
-        string m_recordedUsdFile;
-
-        [UnitySetUp]
-        public IEnumerator SetUp()
+        [UnityTest]
+        public IEnumerator TestExportSparseTimesampling()
         {
             // Create the necessary objects
             // Cube is animated by an animation clip, Cylinder by a rigidbody,
@@ -36,8 +33,7 @@ namespace Unity.Formats.USD.Tests
             clip.SetCurve("", typeof(Transform), "localPosition.x", curve);
 
             // create and setup the timeline
-            var director = CreateTimeline();
-            var timeline = (TimelineAsset)director.playableAsset;
+            CreateTimeline(out var director, out var timeline);
 
             var aTrack = timeline.CreateTrack<AnimationTrack>(null, "CubeAnimation");
             aTrack.CreateClip(clip).displayName = "CubeClip";
@@ -53,10 +49,9 @@ namespace Unity.Formats.USD.Tests
             var usdRecorderAsset = usdRecorderClip.asset as UsdRecorderClip;
 
             // set path to record to
-            m_recordedUsdFile = "Assets/" + Path.GetFileNameWithoutExtension(Path.GetTempFileName()) + ".usd";
-            usdRecorderAsset.m_usdFile = m_recordedUsdFile;
-            m_filesToDelete.Add(usdRecorderAsset.m_usdFile);
-            
+            var recordedUsdFile = TestUtility.GetUSDScenePath(ArtifactsDirectoryFullPath);
+            usdRecorderAsset.m_usdFile = recordedUsdFile;
+
             usdRecorderAsset.m_exportRoot = new ExposedReference<GameObject> { exposedName = Guid.NewGuid().ToString() };
             director.SetReferenceValue(usdRecorderAsset.m_exportRoot.exposedName, cube);
             Time.captureFramerate = (int)timeline.editorSettings.fps;
@@ -67,15 +62,10 @@ namespace Unity.Formats.USD.Tests
                 yield return null;
             director.Stop();
             yield return null;
-        }
 
-        [Test]
-        public void TestExportSparseTimesampling()
-        {
-            Assert.That(m_recordedUsdFile, Does.Exist);
+            Assert.That(recordedUsdFile, Does.Exist);
             // Check that the Cube and Cylinder have timesamples, but not the Sphere (not animated)
-            InitUsd.Initialize();
-            var stage = pxr.UsdStage.Open(m_recordedUsdFile, pxr.UsdStage.InitialLoadSet.LoadAll);
+            var stage = pxr.UsdStage.Open(recordedUsdFile, pxr.UsdStage.InitialLoadSet.LoadAll);
             var scene = Scene.Open(stage);
             var cubePath = "/Cube";
             var spherePath = "/Cube/Sphere";
@@ -90,22 +80,11 @@ namespace Unity.Formats.USD.Tests
             scene.Close();
         }
 
-        [TearDown]
-        public void TearDown()
+        static void CreateTimeline(out PlayableDirector director, out TimelineAsset timeline)
         {
-            foreach (var file in m_filesToDelete)
-            {
-                File.Delete(file);
-            }
-            m_filesToDelete.Clear();
-        }
-
-        PlayableDirector CreateTimeline()
-        {
-            var director = new GameObject("Timeline").AddComponent<PlayableDirector>();
-            var timeline = ScriptableObject.CreateInstance<TimelineAsset>();
+            director = new GameObject("Timeline").AddComponent<PlayableDirector>();
+            timeline = ScriptableObject.CreateInstance<TimelineAsset>();
             director.playableAsset = timeline;
-            return director;
         }
     }
 }

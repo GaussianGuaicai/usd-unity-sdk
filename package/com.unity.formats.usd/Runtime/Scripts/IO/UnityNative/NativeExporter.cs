@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -219,7 +219,7 @@ namespace Unity.Formats.USD
                             oldVtValue = oldAttr.Get(0);
                           }
                         }
-            
+
                         if (oldVtValue != null && vtValue == oldVtValue) {
                           Debug.Log("skipping: " + prop.name);
                           continue;
@@ -252,9 +252,11 @@ namespace Unity.Formats.USD
     }
 }
 #else
-namespace Unity.Formats.USD {
-  public class NativeExporter {
-    public static void ExportObject(ObjectContext objContext, ExportContext exportContext) {}
-  }
+namespace Unity.Formats.USD
+{
+    public class NativeExporter
+    {
+        public static void ExportObject(ObjectContext objContext, ExportContext exportContext) { }
+    }
 }
 #endif

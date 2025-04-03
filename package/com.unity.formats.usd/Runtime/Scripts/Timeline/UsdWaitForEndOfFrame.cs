@@ -1,4 +1,4 @@
-﻿// Copyright 2019 Jeremy Cowles. All rights reserved.
+// Copyright 2019 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,11 @@ namespace Unity.Formats.USD
         {
             if (s_instance == null)
             {
+#if UNITY_2023_1_OR_NEWER
+                s_instance = GameObject.FindAnyObjectByType<UsdWaitForEndOfFrame>();
+#else
                 s_instance = GameObject.FindObjectOfType<UsdWaitForEndOfFrame>();
+#endif
                 if (s_instance == null)
                 {
                     var go = new GameObject();

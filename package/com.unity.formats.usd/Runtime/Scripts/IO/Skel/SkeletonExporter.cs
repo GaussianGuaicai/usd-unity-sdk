@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ namespace Unity.Formats.USD
         public static void ExportSkeleton(ObjectContext objContext, ExportContext exportContext)
         {
             var scene = exportContext.scene;
-            var sample = (SkeletonSample) objContext.sample;
+            var sample = (SkeletonSample)objContext.sample;
             var boneNames = exportContext.skelSortedMap[objContext.gameObject.transform];
             sample.joints = new string[boneNames.Count];
             sample.bindTransforms = new Matrix4x4[boneNames.Count];
@@ -82,7 +82,7 @@ namespace Unity.Formats.USD
 
         public static void ExportSkelRoot(ObjectContext objContext, ExportContext exportContext)
         {
-            var sample = (SkelRootSample) objContext.sample;
+            var sample = (SkelRootSample)objContext.sample;
 
             // Compute bounds for the root, required by USD.
             bool first = true;
@@ -120,6 +120,9 @@ namespace Unity.Formats.USD
                 sample.extent.center = UnityTypeConverter.ChangeBasis(sample.extent.center);
             }
 
+            pxr.UsdPrim usdPrim = exportContext.scene.GetPrimAtPath(objContext.path);
+            pxr.UsdSkelBindingAPI.Apply(usdPrim);
+
             // Convert the transform
             var path = new pxr.SdfPath(objContext.path);
 
@@ -138,7 +141,7 @@ namespace Unity.Formats.USD
         public static void ExportSkelAnimation(ObjectContext objContext, ExportContext exportContext)
         {
             var scene = exportContext.scene;
-            var sample = (SkelAnimationSample) objContext.sample;
+            var sample = (SkelAnimationSample)objContext.sample;
             var go = objContext.gameObject;
             var boneNames = exportContext.skelSortedMap[go.transform];
             var skelRoot = go.transform;
@@ -180,7 +183,7 @@ namespace Unity.Formats.USD
             }
 
             var skelWorldTransform = UnityTypeConverter.ToGfMatrix(rootXf);
-            pxr.VtMatrix4dArray vtJointsLS = new pxr.VtMatrix4dArray((uint) boneNames.Count);
+            pxr.VtMatrix4dArray vtJointsLS = new pxr.VtMatrix4dArray((uint)boneNames.Count);
             pxr.VtMatrix4dArray vtJointsWS = UnityTypeConverter.ToVtArray(worldXf);
             pxr.VtMatrix4dArray vtJointsWSInv = UnityTypeConverter.ToVtArray(worldXfInv);
 

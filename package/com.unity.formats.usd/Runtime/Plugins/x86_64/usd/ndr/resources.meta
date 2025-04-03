@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/ndr/resources.meta
 guid: d5200a905bc9d9147b385342a27a1271
+========
+guid: af948aebddec76d4190780cffc2ef7ff
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdHydra/resources.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

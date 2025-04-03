@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -207,11 +207,7 @@ namespace Unity.Formats.USD
                 surface.metallic.defaultValue = 0.0f;
             }
 
-            // Gross heuristics to detect workflow.
-            if (material.IsKeywordEnabled("_SPECGLOSSMAP")
-                || material.HasProperty("_SpecColor")
-                || material.HasProperty("_SpecularColor")
-                || material.shader.name.ToLower().Contains("specular"))
+            if (ShouldUseSpecularWorkflow(material))
             {
                 if (material.HasProperty("_SpecGlossMap") && material.GetTexture("_SpecGlossMap") != null)
                 {
@@ -243,7 +239,7 @@ namespace Unity.Formats.USD
                 }
                 else
                 {
-                    surface.roughness.defaultValue = 1.0f;
+                    surface.roughness.defaultValue = 0.5f;
                 }
 
                 surface.useSpecularWorkflow.defaultValue = 1;
@@ -269,7 +265,7 @@ namespace Unity.Formats.USD
                 }
                 else
                 {
-                    surface.metallic.defaultValue = 0.0f;
+                    surface.metallic.defaultValue = .5f;
                 }
 
                 if (material.HasProperty("_Glossiness"))
@@ -278,7 +274,7 @@ namespace Unity.Formats.USD
                 }
                 else
                 {
-                    surface.roughness.defaultValue = 1.0f;
+                    surface.roughness.defaultValue = 0.5f;
                 }
             }
 
@@ -296,7 +292,7 @@ namespace Unity.Formats.USD
             }
             else
             {
-                surface.roughness.defaultValue = 1.0f;
+                surface.roughness.defaultValue = 0.5f;
             }
         }
 
@@ -384,6 +380,20 @@ namespace Unity.Formats.USD
                 shaderMode = (StandardShaderBlendMode) mat.GetFloat("_Mode");
             }
 
+            if (mat.HasProperty("_Surface"))
+            {
+                if (mat.HasProperty("_AlphaClip") && mat.GetFloat("_AlphaClip") == 1.0f)
+                {
+                    shaderMode = StandardShaderBlendMode.Cutout;
+                }
+                else
+                {
+                    shaderMode = mat.GetFloat("_Surface") == 0.0f
+                        ? StandardShaderBlendMode.Opaque
+                        : StandardShaderBlendMode.Transparent;
+                }
+            }
+
             if (shaderMode != StandardShaderBlendMode.Opaque || forceOpacity)
             {
                 if (!string.IsNullOrEmpty(mian_tex_keyword))
@@ -434,8 +444,11 @@ namespace Unity.Formats.USD
 
             if (mat.HasProperty("_OcclusionMap") && mat.GetTexture("_OcclusionMap") != null)
             {
+                // Occlusion maps in built-in standard shaders have the same data in every channel.
+                // In URP, the occlusion is packed into the G channel of a mask map.
+                // https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@16.0/manual/lit-shader.html#channel-packing
                 var newTex = SetupTexture(scene, usdShaderPath, mat, surface, Vector4.one, destTexturePath,
-                    "_OcclusionMap", "r");
+                    "_OcclusionMap", "g");
                 surface.occlusion.SetConnectedPath(newTex);
             }
 
@@ -474,6 +487,20 @@ namespace Unity.Formats.USD
             Cutout = 1,
             Fade = 2, // Old school alpha-blending mode, fresnel does not affect amount of transparency
             Transparent = 3 // Physically plausible transparency mode, implemented as alpha pre-multiply
+        }
+
+        // return true if the material should use specular workflow
+        private static bool ShouldUseSpecularWorkflow(Material material)
+        {
+            // Workflow mode of 0 is Specular and 1 is Metallic
+            if (material.HasProperty("_WorkflowMode"))
+                return (material.GetFloat("_WorkflowMode") == 0.0f);
+
+            // Gross heuristics to detect specular workflow if workflow mode not set
+            return material.IsKeywordEnabled("_SPECGLOSSMAP")
+                || material.HasProperty("_SpecColor")
+                || material.HasProperty("_SpecularColor")
+                || material.shader.name.ToLower().Contains("specular");
         }
     }
 }

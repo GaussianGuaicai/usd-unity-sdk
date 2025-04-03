@@ -11,10 +11,8 @@ using Scene = USD.NET.Scene;
 
 namespace Unity.Formats.USD.Tests
 {
-    public class SanityTest
+    public class SanityTest : BaseFixtureRuntime
     {
-        List<string> filesToDelete = new List<string>();
-
         class MyCustomData : SampleBase
         {
             public string aString;
@@ -22,17 +20,9 @@ namespace Unity.Formats.USD.Tests
             public Bounds aBoundingBox;
         }
 
-        [SetUp]
-        public void SetUp()
-        {
-            InitUsd.Initialize();
-        }
-
         [Test]
         public void CanWriteCustomData()
         {
-            string usdFile = System.IO.Path.Combine(UnityEngine.Application.dataPath, "sceneFile.usda");
-            filesToDelete.Add(usdFile);
             // Populate Values.
             var value = new MyCustomData();
             value.aString = "IT'S ALIIIIIIIIIIIIIVE!";
@@ -40,14 +30,15 @@ namespace Unity.Formats.USD.Tests
             value.aBoundingBox = new UnityEngine.Bounds();
 
             // Writing the value.
-            var scene = Scene.Create(usdFile);
+            string usdFile = TestUtility.CreateTmpUsdFile(ArtifactsDirectoryFullPath, "sceneFile.usda");
+            var scene = ImportHelpers.InitForOpen(usdFile);
             scene.Time = 1.0;
             scene.Write("/someValue", value);
             Debug.Log(scene.Stage.GetRootLayer().ExportToString());
             scene.Save();
             scene.Close();
 
-            Assert.IsTrue(File.Exists(usdFile));
+            Assert.IsTrue(File.Exists(usdFile), "File not found.");
 
             // Reading the value.
             Debug.Log(usdFile);
@@ -56,25 +47,9 @@ namespace Unity.Formats.USD.Tests
             scene.Time = 1.0;
             scene.Read("/someValue", newValue);
 
-            Assert.AreEqual(value.aString, newValue.aString);
+            Assert.AreEqual(value.aString, newValue.aString, "Serialized data don't match the original data.");
 
             scene.Close();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            foreach (var file in filesToDelete)
-            {
-                try
-                {
-                    File.Delete(file);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
         }
     }
 }

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdSkel/resources/usdSkel.meta
 guid: dc0b1f7cb3cd7c74eb96f17671ecc284
+========
+guid: 9cbd90d78c3318d46a604bcd99030542
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdSkel.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

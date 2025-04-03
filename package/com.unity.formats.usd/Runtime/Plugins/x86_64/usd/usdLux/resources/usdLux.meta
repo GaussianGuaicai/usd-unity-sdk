@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdLux/resources/usdLux.meta
 guid: 66afc9f7d31f4b44b91f1661ed2f1631
+========
+guid: 96813a787428b2a468488eb3aa94e069
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdLux.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

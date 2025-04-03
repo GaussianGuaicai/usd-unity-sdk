@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,18 +39,22 @@ namespace Unity.Formats.USD
         public Dictionary<SdfPath, MeshImporter.GeometrySubsets> MeshSubsets =
             new Dictionary<SdfPath, MeshImporter.GeometrySubsets>();
 
-        public SdfPath[] Cameras { get; set; }
-        public SdfPath[] Meshes { get; set; }
-        public SdfPath[] Cubes { get; set; }
-        public SdfPath[] Spheres { get; set; }
-        public SdfPath[] Xforms { get; set; }
-        public SdfPath[] SkelRoots { get; set; }
-        public SdfPath[] Skeletons { get; set; }
-        public SdfPath[] Materials { get; set; }
+            public SdfPath[] Cameras { get; set; }
+            public SdfPath[] Meshes { get; set; }
+            public SdfPath[] Cubes { get; set; }
+            public SdfPath[] Spheres { get; set; }
+            public SdfPath[] Xforms { get; set; }
+            public SdfPath[] SkelRoots { get; set; }
+            public SdfPath[] Skeletons { get; set; }
+            public SdfPath[] Materials { get; set; }
         public SdfPath[] DirectionalLights { get; set; }
         public SdfPath[] SphereLights { get; set; }
         public SdfPath[] RectLights { get; set; }
         public SdfPath[] DiscLights { get; set; }
+
+        // Flags for import analytics
+        public bool ContainsPointInstances { get; set; }
+        public bool HasErrors { get; set; } = false;
 
         // Normal objects in the hierarchy.
         private Dictionary<SdfPath, GameObject> m_prims = new Dictionary<SdfPath, GameObject>();
@@ -65,6 +69,7 @@ namespace Unity.Formats.USD
 
         public PrimMap()
         {
+            ContainsPointInstances = false;
         }
 
         public GameObject this[SdfPath path]
@@ -93,7 +98,7 @@ namespace Unity.Formats.USD
         }
 
         IEnumerator<KeyValuePair<SdfPath, GameObject>>
-            IEnumerable<KeyValuePair<SdfPath, GameObject>>.GetEnumerator()
+        IEnumerable<KeyValuePair<SdfPath, GameObject>>.GetEnumerator()
         {
             return m_prims.GetEnumerator();
         }
@@ -111,7 +116,7 @@ namespace Unity.Formats.USD
 
         public void AddInstanceRoot(SdfPath instancePath, GameObject go, SdfPath masterPath)
         {
-            m_instanceRoots[instancePath] = new InstanceRoot {gameObject = go, masterPath = masterPath};
+            m_instanceRoots[instancePath] = new InstanceRoot { gameObject = go, masterPath = masterPath };
         }
 
         public Dictionary<SdfPath, GameObject>.KeyCollection GetMasterRootPaths()
@@ -151,6 +156,9 @@ namespace Unity.Formats.USD
             }
 
             m_prims.Clear();
+
+            ContainsPointInstances = false;
+            HasErrors = false;
         }
 
         /// <summary>
@@ -174,6 +182,9 @@ namespace Unity.Formats.USD
             SphereLights = null;
             RectLights = null;
             DiscLights = null;
+
+            ContainsPointInstances = false;
+            HasErrors = false;
         }
     }
 }

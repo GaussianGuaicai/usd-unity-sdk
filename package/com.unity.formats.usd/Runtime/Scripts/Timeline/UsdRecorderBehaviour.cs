@@ -1,4 +1,4 @@
-﻿// Copyright 2019 Jeremy Cowles. All rights reserved.
+// Copyright 2019 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -82,7 +82,9 @@ namespace Unity.Formats.USD
                     // Set the current working directory to the tmp directory to export with relative paths.
                     Directory.SetCurrentDirectory(tmpDirPath);
 
-                    Clip.UsdScene = UsdzExporter.InitForSave(usdcFileName);
+                    Clip.UsdScene = ExportHelpers.InitForSave(Path.Combine(tmpDirPath, usdcFileName));
+                    // set the unit to centimeters for usdz
+                    Clip.UsdScene.MetersPerUnit = 0.01;
                 }
                 else
                 {
@@ -234,7 +236,7 @@ namespace Unity.Formats.USD
 #if UNITY_EDITOR
             return EditorApplication.isPlaying;
 #else
-      return true;
+            return true;
 #endif
         }
 

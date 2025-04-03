@@ -128,9 +128,16 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+<<<<<<<< HEAD:package/com.unity.formats.usd/Tests/Editor/Data/004-USDZAnimationExport.unity
   - component: {fileID: 549866999}
   - component: {fileID: 549866998}
   - component: {fileID: 549866997}
+========
+  - component: {fileID: 536733509}
+  - component: {fileID: 536733508}
+  - component: {fileID: 536733506}
+  - component: {fileID: 536733505}
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Samples/ImportMesh/ImportMesh.unity
   m_Layer: 0
   m_Name: USDZAnimationExport
   m_TagString: Untagged
@@ -165,6 +172,7 @@ PlayableDirector:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549866996}
   m_Enabled: 1
+<<<<<<<< HEAD:package/com.unity.formats.usd/Tests/Editor/Data/004-USDZAnimationExport.unity
   serializedVersion: 3
   m_PlayableAsset: {fileID: 11400000, guid: 2af2adfc2d77f814a90e5a332031c529, type: 2}
   m_InitialState: 1
@@ -181,6 +189,52 @@ PlayableDirector:
     - 72d837dd64c05594887d24d779fe1ce5: {fileID: 549866996}
     - c387d1b9de81c084ebab7a18d63ad753: {fileID: 549866996}
 --- !u!4 &549866999
+========
+--- !u!20 &536733508
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 536733504}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &536733509
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Samples/ImportMesh/ImportMesh.unity
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -312,6 +366,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1265840039}
   m_Enabled: 1
+<<<<<<<< HEAD:package/com.unity.formats.usd/Tests/Editor/Data/004-USDZAnimationExport.unity
 --- !u!20 &1265840041
 Camera:
   m_ObjectHideFlags: 0
@@ -356,6 +411,18 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &1265840042
+========
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b9422ac107eb345ba17ec50a29caf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_usdFile:
+  m_material: {fileID: 2100000, guid: 5a4399f9b4f4d774dbc7921697839d7e, type: 2}
+  m_usdTime: 0
+  m_changeHandedness: 0
+  m_enableGpuInstancing: 0
+--- !u!4 &2133590768
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Samples/ImportMesh/ImportMesh.unity
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

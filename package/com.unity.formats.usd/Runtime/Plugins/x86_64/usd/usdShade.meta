@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdShade.meta
 guid: 7f5794ecb65089940869e86c89b9e1dd
+========
+guid: 378c69bc3e4c79d4dbc037cfc375dc09
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Dependencies/USD.NET/generated/pxr/usd/usdShade.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

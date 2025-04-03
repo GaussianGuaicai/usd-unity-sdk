@@ -1,19 +1,30 @@
 {
     "name": "Unity.Formats.USD.Runtime",
+    "rootNamespace": "",
     "references": [
-        "Unity.Timeline"
+        "Unity.Timeline",
+        "USD.NET",
+        "USD.NET.Unity",
+        "Unity.Formats.USD.Common",
+        "Unity.RenderPipelines.Universal.Editor"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor",
         "macOSStandalone",
-        "WindowsStandalone64",
-        "LinuxStandalone64"
+        "WindowsStandalone64"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "7.0.0",
+            "define": "URP_AVAILABLE"
+        }
+    ],
+    "noEngineReferences": false
 }

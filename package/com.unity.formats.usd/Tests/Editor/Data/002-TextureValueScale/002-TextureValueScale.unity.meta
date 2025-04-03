@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Tests/Editor/Data/002-TextureValueScale/002-TextureValueScale.unity.meta
 guid: 6d44c41b09ae0ec4bafd3cf82649d938
+========
+guid: 3cb2e7bd452fe4392bfa557e2e336882
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Samples/HelloUsd/Unity.Formats.USD.HelloUsd.api.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

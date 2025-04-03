@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,9 +24,7 @@ namespace Unity.Formats.USD
         {
             UnityEngine.Profiling.Profiler.BeginSample("USD: Xform Conversion");
 
-            XformSample sample = (XformSample) objContext.sample;
-            var localRot = objContext.gameObject.transform.localRotation;
-            var localScale = objContext.gameObject.transform.localScale;
+            XformSample sample = (XformSample)objContext.sample;
             var path = new pxr.SdfPath(objContext.path);
 
             // If exporting for Z-Up, rotate the world.
@@ -37,8 +35,31 @@ namespace Unity.Formats.USD
                 correctZUp,
                 path.IsRootPrimPath(),
                 exportContext.basisTransform);
-
             UnityEngine.Profiling.Profiler.EndSample();
+
+            // If exporting overrides, only export what changed
+            if (exportContext.exportTransformOverrides)
+            {
+                UnityEngine.Profiling.Profiler.BeginSample("USD: Xform override check");
+                var sourceSample = new XformSample();
+                float tolerance = 0.0001f;
+                exportContext.scene.Read(path, sourceSample);
+                bool areClose = true;
+                for (int i = 0; i < 16; i++)
+                {
+                    if (Mathf.Abs(sample.transform[i] - sourceSample.transform[i]) > tolerance)
+                    {
+                        areClose = false;
+                        break;
+                    }
+                }
+                UnityEngine.Profiling.Profiler.EndSample();
+                if (areClose)
+                {
+                    return;
+                }
+            }
+
 
             UnityEngine.Profiling.Profiler.BeginSample("USD: Xform Write");
             exportContext.scene.Write(objContext.path, sample);
@@ -55,7 +76,7 @@ namespace Unity.Formats.USD
 
             try
             {
-                foreach (var path in scene.Find<XformableSample>())
+                foreach (var path in scene.Find<XformSample>())
                 {
                     GameObject go;
                     if (!primMap.TryGetValue(path, out go))

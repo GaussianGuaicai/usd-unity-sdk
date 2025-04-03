@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Editor/Utils.meta
 guid: f035652d61b6f48d88f1fea020a72b2c
+========
+guid: a1e157d6c338d804da42a03ac6474292
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Common.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

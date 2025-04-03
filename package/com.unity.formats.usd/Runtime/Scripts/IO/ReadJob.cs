@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ namespace Unity.Formats.USD
     /// </remarks>
     public struct ReadAllJob<T> :
         IEnumerator<SampleEnumerator<T>.SampleHolder>,
-        IEnumerable<SampleEnumerator<T>.SampleHolder>,
-        IJobParallelFor
-        where T : SampleBase, new()
+            IEnumerable<SampleEnumerator<T>.SampleHolder>,
+            IJobParallelFor
+        where T : SampleBase, ISanitizable, new()
     {
         static private Scene m_scene;
         static private SdfPath[] m_paths;
@@ -52,6 +52,8 @@ namespace Unity.Formats.USD
         static SampleEnumerator<T>.SampleHolder m_current;
         static private AutoResetEvent m_ready;
 
+        static SceneImportOptions m_importOptions;
+
         public SampleEnumerator<T>.SampleHolder Current
         {
             get { return m_current; }
@@ -62,7 +64,7 @@ namespace Unity.Formats.USD
             get { return m_current; }
         }
 
-        public ReadAllJob(Scene scene, SdfPath[] paths)
+        public ReadAllJob(Scene scene, SdfPath[] paths, SceneImportOptions importOptions)
         {
             m_ready = new AutoResetEvent(false);
             m_scene = scene;
@@ -70,13 +72,14 @@ namespace Unity.Formats.USD
             m_done = new object[paths.Length];
             m_current = new SampleEnumerator<T>.SampleHolder();
             m_paths = paths;
+            m_importOptions = importOptions;
         }
 
         private bool ShouldReadPath(Scene scene, SdfPath path)
         {
             return scene.AccessMask == null
-                   || scene.IsPopulatingAccessMask
-                   || scene.AccessMask.Included.ContainsKey(path);
+                || scene.IsPopulatingAccessMask
+                || scene.AccessMask.Included.ContainsKey(path);
         }
 
         public void Run()
@@ -92,7 +95,29 @@ namespace Unity.Formats.USD
             var sample = new T();
             if (ShouldReadPath(m_scene, m_paths[index]))
             {
+                var sampleWithExtraPrimvars = sample as IArbitraryPrimvars;
+                if (sampleWithExtraPrimvars != null)
+                {
+                    AddPrimvarsFromMaterial(index, ref sampleWithExtraPrimvars);
+                }
+
                 m_scene.Read(m_paths[index], sample);
+
+                var restorableSample = sample as IRestorable;
+                DeserializationContext deserializationContext = null;
+                m_scene.AccessMask?.Included.TryGetValue(m_paths[index], out deserializationContext);
+                if (restorableSample != null && deserializationContext != null)
+                {
+                    restorableSample.FromCachedData(deserializationContext.cachedData);
+                    sample.Sanitize(m_scene, m_importOptions);
+                    //Don't update the state after the first frame
+                    if (deserializationContext.cachedData == null)
+                        deserializationContext.cachedData = restorableSample.ToCachedData();
+                }
+                else
+                {
+                    sample.Sanitize(m_scene, m_importOptions);
+                }
             }
             else
             {
@@ -104,6 +129,29 @@ namespace Unity.Formats.USD
             m_results[index] = sample;
 
             m_ready.Set();
+        }
+
+        /// <summary>
+        /// Add all the primvars needed by the material to the sample arbitrary primvars list.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="sample"></param>
+        static void AddPrimvarsFromMaterial(int index, ref IArbitraryPrimvars sample)
+        {
+            var materialPath = "";
+            var bind = new UsdShadeMaterialBindingAPI(m_scene.GetPrimAtPath(m_paths[index]));
+            //what happens for materials per face?
+            var rel = bind.GetDirectBindingRel();
+            if (rel.GetTargets().Count > 0)
+            {
+                materialPath = rel.GetTargets()[0].GetPrimPath();
+            }
+
+            var primvars = m_importOptions.materialMap.GetPrimvars(materialPath);
+            if (primvars != null)
+            {
+                sample.AddPrimvars(primvars);
+            }
         }
 
         public bool MoveNext()
@@ -136,7 +184,7 @@ namespace Unity.Formats.USD
                 }
 
                 j++;
-                if (!m_ready.WaitOne(1000))
+                if (!m_ready.WaitOne(10000))
                 {
                     Debug.LogError("Timed out while waiting for thread read");
                     return false;

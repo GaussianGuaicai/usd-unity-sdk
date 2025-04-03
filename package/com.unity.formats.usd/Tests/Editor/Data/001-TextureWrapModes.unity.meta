@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Tests/Editor/Data/001-TextureWrapModes.unity.meta
 guid: b57c9d3c0b153bb4e8116268c0583a2b
+========
+guid: d8085ad591c4e41f499713d94af02807
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Tests/Editor/005-TextureExport/Unity.Formats.USD.ExportMesh.api.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

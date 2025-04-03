@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ namespace Unity.Formats.USD
             if (previewSurf.id == null || previewSurf.id != "UsdPreviewSurface")
             {
                 Debug.LogWarning("Unknown surface type: <" + sample.surface.connectedPath + ">"
-                                 + "Surface ID: " + previewSurf.id);
+                    + "Surface ID: " + previewSurf.id);
                 return null;
             }
 
@@ -176,6 +176,12 @@ namespace Unity.Formats.USD
                 matAdapter.ImportParametersFromUsd(scene, materialPath, sample, previewSurf, options);
                 matAdapter.ImportFromUsd();
             }
+            else if (pipeline.GetType().Name == "UniversalRenderPipelineAsset")
+            {
+                var matAdapter = new UrpShaderImporter(mat);
+                matAdapter.ImportParametersFromUsd(scene, materialPath, sample, previewSurf, options);
+                matAdapter.ImportFromUsd();
+            }
             else
             {
                 // Fallback to the Standard importer, which may pickup some attributes by luck.
@@ -224,7 +230,7 @@ namespace Unity.Formats.USD
             Connectable<Vector2> st = textureSample.st;
             if (st != null && st.IsConnected() && !string.IsNullOrEmpty(st.connectedPath))
             {
-                var pvSrc = new PrimvarReaderSample<Vector2>();
+                var pvSrc = new PrimvarReaderImportSample<Vector2>();
                 scene.Read(new pxr.SdfPath(textureSample.st.connectedPath).GetPrimPath(), pvSrc);
 
                 if (pvSrc.varname != null)
@@ -235,8 +241,16 @@ namespace Unity.Formats.USD
                         var attr = scene.GetAttributeAtPath(connPath);
                         if (attr != null)
                         {
-                            var value = attr.Get(scene.Time);
-                            uvPrimvar = pxr.UsdCs.VtValueToTfToken(value).ToString();
+                            pxr.VtValue value = attr.Get(scene.Time);
+
+                            // This value type is a TfToken in USD versions < 21.11, and a string in 21.11+
+                            string typeName = value.GetTypeName();
+                            if (typeName == "string")
+                                uvPrimvar = value;
+                            else if (typeName == "TfToken")
+                                uvPrimvar = pxr.UsdCs.VtValueToTfToken(value).ToString();
+                            else
+                                Debug.LogWarning($"Unexpected type <{typeName}> on uvPrimvar at <{connPath}>.");
                         }
                         else
                         {
@@ -244,11 +258,16 @@ namespace Unity.Formats.USD
                             uvPrimvar = "";
                         }
                     }
-                    else if (pvSrc.varname.defaultValue != null)
+                    else if (!string.IsNullOrEmpty(pvSrc.varname.defaultValue))
                     {
                         // Ask the mesh importer to load the specified texcoord.
                         // This must be a callback, since materials-to-meshes are one-to-many.
                         uvPrimvar = pvSrc.varname.defaultValue;
+                    }
+                    else
+                    {
+                        // Assume a default
+                        uvPrimvar = "st";
                     }
                 }
             }
@@ -284,7 +303,7 @@ namespace Unity.Formats.USD
                 UnityEditor.FileUtil.CopyFileOrDirectory(sourcePath, destPath);
                 UnityEditor.AssetDatabase.ImportAsset(assetPath);
                 UnityEditor.TextureImporter texImporter =
-                    (UnityEditor.TextureImporter) UnityEditor.AssetImporter.GetAtPath(assetPath);
+                    (UnityEditor.TextureImporter)UnityEditor.AssetImporter.GetAtPath(assetPath);
                 if (texImporter == null)
                 {
                     Debug.LogError("Failed to load asset: " + assetPath);
@@ -304,9 +323,9 @@ namespace Unity.Formats.USD
                 }
             }
 
-            return (Texture2D) UnityEditor.AssetDatabase.LoadAssetAtPath(assetPath, typeof(Texture2D));
+            return (Texture2D)UnityEditor.AssetDatabase.LoadAssetAtPath(assetPath, typeof(Texture2D));
 #else
-      return null;
+            return null;
 #endif
         }
 
@@ -342,16 +361,16 @@ namespace Unity.Formats.USD
             var newAssetPath = Path.ChangeExtension(assetPath, fileNameSuffix + ".png");
             File.WriteAllBytes(newAssetPath, bytes);
             UnityEditor.AssetDatabase.ImportAsset(newAssetPath);
-            var texImporter = (UnityEditor.TextureImporter) UnityEditor.AssetImporter.GetAtPath(newAssetPath);
+            var texImporter = (UnityEditor.TextureImporter)UnityEditor.AssetImporter.GetAtPath(newAssetPath);
             UnityEditor.EditorUtility.SetDirty(texImporter);
             texImporter.SaveAndReimport();
 #endif
             // To get the correct file ID, the texture must be reloaded from the asset path.
             Texture2D.DestroyImmediate(newTex);
 #if UNITY_EDITOR
-            return (Texture2D) UnityEditor.AssetDatabase.LoadAssetAtPath(newAssetPath, typeof(Texture2D));
+            return (Texture2D)UnityEditor.AssetDatabase.LoadAssetAtPath(newAssetPath, typeof(Texture2D));
 #else
-      return null;
+            return null;
 #endif
         }
 

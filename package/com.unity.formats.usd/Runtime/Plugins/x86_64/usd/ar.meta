@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/ar.meta
 guid: f0a66e9d8374ffc44ad53dccff6e800f
+========
+guid: 99b6fdd17879e204fa8f67cba8df24c2
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Dependencies/USD.NET/generated/pxr/usd/ar.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

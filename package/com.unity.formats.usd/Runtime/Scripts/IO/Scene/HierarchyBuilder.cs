@@ -138,22 +138,22 @@ namespace Unity.Formats.USD
 
             if (options.ShouldBindMaterials)
             {
-                FindPathsJob.queries[0] = (FindPathsJob.IQuery) new FindPathsJob.Query<MaterialSample>();
+                FindPathsJob.queries[0] = (FindPathsJob.IQuery)new FindPathsJob.Query<MaterialSample>();
             }
 
             if (options.importCameras)
             {
-                FindPathsJob.queries[1] = (FindPathsJob.IQuery) new FindPathsJob.Query<CameraSample>();
+                FindPathsJob.queries[1] = (FindPathsJob.IQuery)new FindPathsJob.Query<CameraSample>();
             }
 
             if (options.importMeshes)
             {
-                FindPathsJob.queries[2] = (FindPathsJob.IQuery) new FindPathsJob.Query<MeshSample>();
-                FindPathsJob.queries[3] = (FindPathsJob.IQuery) new FindPathsJob.Query<CubeSample>();
-                FindPathsJob.queries[4] = (FindPathsJob.IQuery) new FindPathsJob.Query<SphereSample>();
+                FindPathsJob.queries[2] = (FindPathsJob.IQuery)new FindPathsJob.Query<MeshSample>();
+                FindPathsJob.queries[3] = (FindPathsJob.IQuery)new FindPathsJob.Query<CubeSample>();
+                FindPathsJob.queries[4] = (FindPathsJob.IQuery)new FindPathsJob.Query<SphereSample>();
             }
 
-            FindPathsJob.queries[5] = (FindPathsJob.IQuery) new FindPathsJob.Query<SkelRootSample>();
+            FindPathsJob.queries[5] = (FindPathsJob.IQuery)new FindPathsJob.Query<SkelRootSample>();
 
             if (options.importSkinning)
             {
@@ -283,9 +283,10 @@ namespace Unity.Formats.USD
                     catch (Exception ex)
                     {
                         Debug.LogException(new Exception("Error processing " + masterRootPrim.GetPath(), ex));
+                        map.HasErrors = true;
                     }
 
-                    foreach (var usdPrim in masterRootPrim.GetDescendants())
+                    foreach (var usdPrim in masterRootPrim.GetAllDescendants())
                     {
                         var parentPath = usdPrim.GetPath().GetParentPath();
                         Transform parentXf = null;
@@ -321,6 +322,7 @@ namespace Unity.Formats.USD
                         catch (Exception ex)
                         {
                             Debug.LogException(new Exception("Error processing " + usdPrim.GetPath(), ex));
+                            map.HasErrors = true;
                             continue;
                         }
                     }
@@ -346,6 +348,7 @@ namespace Unity.Formats.USD
                     catch (Exception ex)
                     {
                         Debug.LogException(new Exception("Error expanding skeleton at " + info.prim.GetPath(), ex));
+                        map.HasErrors = true;
                     }
                 }
 
@@ -537,6 +540,7 @@ namespace Unity.Formats.USD
                 catch (Exception ex)
                 {
                     Debug.LogException(new Exception("Error processing " + prim.GetPath(), ex));
+                    map.HasErrors = true;
                 }
             }
 
@@ -675,7 +679,7 @@ namespace Unity.Formats.USD
                     if (!parentGo)
                     {
                         Debug.LogException(new Exception("Failed to create ancestors for " + path + " for prim: " +
-                                                         prim.GetPath()));
+                            prim.GetPath()));
                         continue;
                     }
                 }

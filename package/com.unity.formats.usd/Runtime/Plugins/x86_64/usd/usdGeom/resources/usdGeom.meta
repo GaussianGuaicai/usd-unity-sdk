@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdGeom/resources/usdGeom.meta
 guid: aab25f67947241b4a8d71539f1bc8db2
+========
+guid: cdf1d2da3d6ab0f43bc7804bc029903a
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdGeom.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

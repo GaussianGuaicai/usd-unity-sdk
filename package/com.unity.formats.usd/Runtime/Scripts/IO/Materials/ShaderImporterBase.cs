@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -52,6 +52,11 @@ namespace Unity.Formats.USD
         public Texture2D ClearcoatMap;
 
         public float? ClearcoatRoughness;
+
+        public float? OpacityThreshold;
+
+        public float? Opacity;
+        public Texture2D OpacityMap;
 
         public ShaderImporterBase(Material material)
         {
@@ -154,6 +159,11 @@ namespace Unity.Formats.USD
             MergePrimvars(uvPrimvar, primvars);
 
             ClearcoatRoughness = previewSurf.clearcoatRoughness.defaultValue;
+            OpacityThreshold = previewSurf.opacityThreshold.defaultValue;
+
+            ImportValueOrMap(scene, previewSurf.opacity, false, options, ref OpacityMap, ref Opacity,
+                out uvPrimvar);
+            MergePrimvars(uvPrimvar, primvars);
 
             if (IsSpecularWorkflow)
             {

@@ -16,9 +16,11 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 using USD.NET;
 using USD.NET.Unity;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Unity.Formats.USD
 {
@@ -53,7 +55,8 @@ namespace Unity.Formats.USD
         // Source Asset.
         // ----------------------------------------------------------------------------------------- //
 
-        [Header("Source Asset")] [SerializeField]
+        [Header("Source Asset")]
+        [SerializeField]
         string m_usdFile;
 
         [HideInInspector]
@@ -103,7 +106,8 @@ namespace Unity.Formats.USD
         [Tooltip("The default material to use when importing metallic workflow USD Preview Surface materials.")]
         public Material m_metallicWorkflowMaterial;
 
-        [HideInInspector] [Tooltip("When enabled, set the GPU Instancing flag on all materials.")]
+        [HideInInspector]
+        [Tooltip("When enabled, set the GPU Instancing flag on all materials.")]
         public bool m_enableGpuInstancing;
 
         // ----------------------------------------------------------------------------------------- //
@@ -123,14 +127,6 @@ namespace Unity.Formats.USD
         [Tooltip("Import policy for primvars:tangent")]
         public ImportMode m_tangents;
 
-        [Tooltip("Import policy for primvars:st")]
-        public ImportMode m_st;
-
-        // Obselete, will be removed in the future.
-        [HideInInspector] public ImportMode m_texcoord1;
-        [HideInInspector] public ImportMode m_texcoord2;
-        [HideInInspector] public ImportMode m_texcoord3;
-
         // ----------------------------------------------------------------------------------------- //
         // Lightmap UV Unwrapping.
         // ----------------------------------------------------------------------------------------- //
@@ -138,16 +134,20 @@ namespace Unity.Formats.USD
         [Header("Mesh Lightmap UV Unwrapping")]
         public bool m_generateLightmapUVs;
 
-        [Tooltip("Maximum allowed angle distortion")] [Range(0, 1)]
+        [Tooltip("Maximum allowed angle distortion")]
+        [Range(0, 1)]
         public float m_unwrapAngleError = .08f;
 
-        [Tooltip("Maximum allowed area distortion")] [Range(0, 1)]
+        [Tooltip("Maximum allowed area distortion")]
+        [Range(0, 1)]
         public float m_unwrapAreaError = .15f;
 
-        [Tooltip("This angle (in degrees) or greater between triangles will cause seam to be created")] [Range(1, 359)]
+        [Tooltip("This angle (in degrees) or greater between triangles will cause seam to be created")]
+        [Range(1, 359)]
         public float m_unwrapHardAngle = 88;
 
-        [Tooltip("UV-island padding in pixels")] [Range(0, 32)]
+        [Tooltip("UV-island padding in pixels")]
+        [Range(0, 32)]
         public int m_unwrapPackMargin = 4;
 
         // ----------------------------------------------------------------------------------------- //
@@ -166,14 +166,14 @@ namespace Unity.Formats.USD
         public bool m_importMonoBehaviors = false;
 
 #if false
-    [Header("Export Settings")]
-    public bool m_exportCameras = true;
-    public bool m_exportMeshes = true;
-    public bool m_exportSkinning = true;
-    public bool m_exportTransforms = true;
-    public bool m_exportSceneInstances = true;
-    public bool m_exportPointInstances = true;
-    public bool m_exportMonoBehaviors = true;
+        [Header("Export Settings")]
+        public bool m_exportCameras = true;
+        public bool m_exportMeshes = true;
+        public bool m_exportSkinning = true;
+        public bool m_exportTransforms = true;
+        public bool m_exportSceneInstances = true;
+        public bool m_exportPointInstances = true;
+        public bool m_exportMonoBehaviors = true;
 #endif
 
         // ----------------------------------------------------------------------------------------- //
@@ -209,6 +209,7 @@ namespace Unity.Formats.USD
             // https://github.com/Unity-Technologies/UniteLA2018Examples/blob/master/Assets/Scripts/GameObjectTypeLogging.cs
             return UnityEditor.PrefabUtility.GetCorrespondingObjectFromSource(root);
         }
+
 #endif
 
         private void OnDestroy()
@@ -239,7 +240,7 @@ namespace Unity.Formats.USD
                     if (!UnityEditor.PrefabUtility.IsPartOfPrefabInstance(root))
                     {
 #if UNITY_2020_1_OR_NEWER
-            assetPath = prefabStage.assetPath;
+                        assetPath = prefabStage.assetPath;
 #else
                         assetPath = prefabStage.prefabAssetPath;
 #endif
@@ -281,10 +282,6 @@ namespace Unity.Formats.USD
             m_color = options.meshOptions.color;
             m_normals = options.meshOptions.normals;
             m_tangents = options.meshOptions.tangents;
-            m_st = options.meshOptions.texcoord0;
-            m_texcoord1 = options.meshOptions.texcoord1;
-            m_texcoord2 = options.meshOptions.texcoord2;
-            m_texcoord3 = options.meshOptions.texcoord3;
             m_generateLightmapUVs = options.meshOptions.generateLightmapUVs;
 
             m_unwrapAngleError = options.meshOptions.unwrapAngleError;
@@ -334,10 +331,6 @@ namespace Unity.Formats.USD
             options.meshOptions.color = m_color;
             options.meshOptions.normals = m_normals;
             options.meshOptions.tangents = m_tangents;
-            options.meshOptions.texcoord0 = m_st;
-            options.meshOptions.texcoord1 = m_texcoord1;
-            options.meshOptions.texcoord2 = m_texcoord2;
-            options.meshOptions.texcoord3 = m_texcoord3;
             options.meshOptions.generateLightmapUVs = m_generateLightmapUVs;
 
             options.meshOptions.unwrapAngleError = m_unwrapAngleError;
@@ -365,7 +358,7 @@ namespace Unity.Formats.USD
             }
 
             return Path.GetFullPath(m_lastScene.FilePath).ToLower().Replace("\\", "/")
-                   != usdFullPath.ToLower().Replace("\\", "/");
+                != usdFullPath.ToLower().Replace("\\", "/");
         }
 
         /// <summary>
@@ -374,9 +367,10 @@ namespace Unity.Formats.USD
         /// </summary>
         public Scene GetScene()
         {
-            InitUsd.Initialize();
+            if (!InitUsd.Initialize())
+                return null;
 
-            if (m_lastScene == null || m_lastScene.Stage == null || SceneFileChanged())
+            if (m_lastScene?.Stage == null || SceneFileChanged())
             {
                 pxr.UsdStage stage = null;
                 if (string.IsNullOrEmpty(usdFullPath))
@@ -461,7 +455,18 @@ namespace Unity.Formats.USD
                 return;
             }
 
-            Component.DestroyImmediate(comp);
+            Component.DestroyImmediate(comp, true);
+        }
+
+        /// <summary>
+        /// Clear internal data.
+        /// Call to <see cref="GetScene">GetScene()</see> to update them with the latest USD data.
+        /// </summary>
+        private void ClearLastData()
+        {
+            m_lastScene = null;
+            m_lastPrimMap = null;
+            m_lastAccessMask = null;
         }
 
         /// <summary>
@@ -469,6 +474,9 @@ namespace Unity.Formats.USD
         /// </summary>
         public void RemoveAllUsdComponents()
         {
+#if UNITY_EDITOR
+            Undo.RegisterFullObjectHierarchyUndo(this, "Remove USD components");
+#endif
             foreach (var src in GetComponentsInChildren<UsdPrimSource>(includeInactive: true))
             {
                 if (src)
@@ -490,6 +498,9 @@ namespace Unity.Formats.USD
         /// </summary>
         public void DestroyAllImportedObjects()
         {
+#if UNITY_EDITOR
+            Undo.RegisterFullObjectHierarchyUndo(this, "Delete USD imported objects");
+#endif
             foreach (var src in GetComponentsInChildren<UsdPrimSource>(includeInactive: true))
             {
                 // Remove the object if it is valid, but never remove the UsdAsset root GameObject, which
@@ -497,7 +508,7 @@ namespace Unity.Formats.USD
                 // stubs of USD Assets can be left in the scene in the scene and imported only as needed.
                 if (src && src.gameObject != this.gameObject)
                 {
-                    GameObject.DestroyImmediate(src.gameObject);
+                    GameObject.DestroyImmediate(src.gameObject, true);
                 }
             }
         }
@@ -512,6 +523,7 @@ namespace Unity.Formats.USD
             StateToOptions(ref options);
 
             options.forceRebuild = forceRebuild;
+            options.ImportType = forceRebuild ? ImportType.ForceRebuild : ImportType.Refresh;
 
             if (string.IsNullOrEmpty(options.projectAssetPath))
             {
@@ -532,6 +544,12 @@ namespace Unity.Formats.USD
                     DestroyAllImportedObjects();
                 }
 
+                pxr.UsdStageLoadRules.Rule activeLoadRule = m_lastScene.Stage.GetLoadRules().GetEffectiveRuleForPath(new pxr.SdfPath("/"));
+                if ((activeLoadRule == pxr.UsdStageLoadRules.Rule.AllRule && options.payloadPolicy == PayloadPolicy.DontLoadPayloads)
+                    || (activeLoadRule == pxr.UsdStageLoadRules.Rule.NoneRule && options.payloadPolicy == PayloadPolicy.LoadAll))
+                {
+                    ClearLastData();
+                }
                 SceneImporter.ImportUsd(root, GetScene(), new PrimMap(), options);
 
 #if UNITY_EDITOR
@@ -553,10 +571,7 @@ namespace Unity.Formats.USD
                     DestroyAllImportedObjects();
                 }
 
-                m_lastScene = null;
-                m_lastPrimMap = null;
-                m_lastAccessMask = null;
-
+                ClearLastData();
                 SceneImporter.ImportUsd(root, GetScene(), new PrimMap(), options);
             }
         }
@@ -587,14 +602,22 @@ namespace Unity.Formats.USD
 
             if (overs == null)
             {
+                UsdEditorAnalytics.SendExportEvent(Path.GetExtension(sceneToReference.usdFullPath), 0, false, onlyOverrides: true);
                 return;
             }
 
+            bool success = false;
+
+            Stopwatch analyticsTimer = new Stopwatch();
+            analyticsTimer.Start();
             var baseLayer = sceneToReference.GetScene();
             if (baseLayer == null)
             {
+                analyticsTimer.Stop();
+                UsdEditorAnalytics.SendExportEvent(Path.GetExtension(sceneToReference.usdFullPath), analyticsTimer.Elapsed.TotalMilliseconds, success, onlyOverrides: true);
                 throw new Exception("Could not open base layer: " + sceneToReference.usdFullPath);
             }
+            overs.AddSubLayer(baseLayer);
 
             overs.Time = baseLayer.Time;
             overs.StartTime = baseLayer.StartTime;
@@ -609,23 +632,32 @@ namespace Unity.Formats.USD
                     overs,
                     BasisTransformation.SlowAndSafe,
                     exportUnvarying: false,
-                    zeroRootTransform: true);
-
-                var rel = ImporterBase.MakeRelativePath(overs.FilePath, sceneToReference.usdFullPath);
-                GetFirstPrim(overs).GetReferences().AddReference(rel, GetFirstPrim(baseLayer).GetPath());
+                    zeroRootTransform: true,
+                    exportOverrides: true);
+                success = true;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogException(ex);
-                return;
+                success = false;
             }
             finally
             {
                 if (overs != null)
                 {
+                    // Remove the reference to the original USD from the override file for flexibility in an asset pipeline
+                    // TODO: Make this an optional setting
+                    overs.Stage.GetRootLayer().GetSubLayerPaths().Erase(0);
                     overs.Save();
                     overs.Close();
                 }
+                else
+                {
+                    success = false;
+                }
+
+                analyticsTimer.Stop();
+                UsdEditorAnalytics.SendExportEvent(Path.GetExtension(sceneToReference.usdFullPath), analyticsTimer.Elapsed.TotalMilliseconds, success, onlyOverrides: true);
             }
         }
 
@@ -663,7 +695,7 @@ namespace Unity.Formats.USD
             // Careful not to update any local members here, if this data is driven from a prefab, we
             // dont want those changes to be baked back into the asset.
             time += foreignRoot.m_usdTimeOffset;
-            float usdTime = (float) (scene.StartTime + time * scene.Stage.GetTimeCodesPerSecond());
+            float usdTime = (float)(scene.StartTime + time * scene.Stage.GetTimeCodesPerSecond());
             if (usdTime > scene.EndTime)
             {
                 return;
@@ -701,13 +733,13 @@ namespace Unity.Formats.USD
             }
 
             if (m_debugPrintVariabilityCache && m_lastAccessMask != null
-                                             && !scene.IsPopulatingAccessMask)
+                && !scene.IsPopulatingAccessMask)
             {
                 var sb = new System.Text.StringBuilder();
                 foreach (var kvp in m_lastAccessMask.Included)
                 {
                     sb.AppendLine(kvp.Key);
-                    foreach (var member in kvp.Value)
+                    foreach (var member in kvp.Value.dynamicMembers)
                     {
                         sb.AppendLine("  ." + member.Name);
                     }
@@ -719,6 +751,7 @@ namespace Unity.Formats.USD
             }
 
             scene.AccessMask = m_lastAccessMask;
+            options.ImportType = ImportType.Streaming;
             SceneImporter.ImportUsd(foreignRoot.gameObject,
                 scene,
                 foreignRoot.m_lastPrimMap,
@@ -758,11 +791,6 @@ namespace Unity.Formats.USD
 
             // Note that tangent and Normals must be updated when the mesh deforms.
             options.importHierarchy = false;
-
-            options.meshOptions.texcoord0 = ImportMode.Ignore;
-            options.meshOptions.texcoord1 = ImportMode.Ignore;
-            options.meshOptions.texcoord2 = ImportMode.Ignore;
-            options.meshOptions.texcoord3 = ImportMode.Ignore;
         }
 
         /// <summary>
@@ -851,6 +879,7 @@ namespace Unity.Formats.USD
             SceneImportOptions importOptions = new SceneImportOptions();
             this.StateToOptions(ref importOptions);
             importOptions.usdRootPath = prim.GetPath();
+            importOptions.ImportType = ImportType.Refresh; // force rebuild is false, so this is a refresh not a full reimport..?
             SceneImporter.ImportUsd(go, scene, new PrimMap(), true, importOptions);
         }
 
@@ -936,6 +965,7 @@ namespace Unity.Formats.USD
             SceneImportOptions importOptions = new SceneImportOptions();
             this.StateToOptions(ref importOptions);
             importOptions.usdRootPath = prim.GetPath();
+            importOptions.ImportType = ImportType.Refresh; // force rebuild is false, so this is a refresh not a full reimport..?
             SceneImporter.ImportUsd(go, scene, new PrimMap(), true, importOptions);
         }
     }

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdLux.meta
 guid: 96813a787428b2a468488eb3aa94e069
+========
+guid: e30625f04ab392549a895b97de1abc8d
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Dependencies/USD.NET/generated/pxr/usd/usdLux.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

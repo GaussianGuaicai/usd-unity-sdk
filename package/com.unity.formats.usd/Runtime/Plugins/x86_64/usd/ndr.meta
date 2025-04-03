@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/ndr.meta
 guid: 47eee66401ec86a4f988ff6ac2822762
+========
+guid: 6c28e156bd0f71b49897a1a4b31b4318
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Dependencies/USD.NET/generated/pxr/usd/ndr.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

@@ -6871,6 +6871,100 @@ SWIGINTERN void std_vector_Sl_UsdStageRefPtr_Sg__SetRange(std::vector< UsdStageR
         std::copy(values.begin(), values.end(), self->begin()+index);
       }
 
+#include "pxr/usd/usd/stageLoadRules.h"
+
+SWIGINTERN std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *new_std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg___SWIG_2(int capacity){
+        std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >* pv = 0;
+        if (capacity >= 0) {
+          pv = new std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >();
+          pv->reserve(capacity);
+       } else {
+          throw std::out_of_range("capacity");
+       }
+       return pv;
+      }
+SWIGINTERN std::pair< SdfPath,UsdStageLoadRules::Rule > std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__getitemcopy(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index){
+        if (index>=0 && index<(int)self->size())
+          return (*self)[index];
+        else
+          throw std::out_of_range("index");
+      }
+SWIGINTERN std::pair< SdfPath,UsdStageLoadRules::Rule > const &std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__getitem(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index){
+        if (index>=0 && index<(int)self->size())
+          return (*self)[index];
+        else
+          throw std::out_of_range("index");
+      }
+SWIGINTERN void std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__setitem(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index,std::pair< SdfPath,UsdStageLoadRules::Rule > const &val){
+        if (index>=0 && index<(int)self->size())
+          (*self)[index] = val;
+        else
+          throw std::out_of_range("index");
+      }
+SWIGINTERN void std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__AddRange(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const &values){
+        self->insert(self->end(), values.begin(), values.end());
+      }
+SWIGINTERN std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__GetRange(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index,int count){
+        if (index < 0)
+          throw std::out_of_range("index");
+        if (count < 0)
+          throw std::out_of_range("count");
+        if (index >= (int)self->size()+1 || index+count > (int)self->size())
+          throw std::invalid_argument("invalid range");
+        return new std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >(self->begin()+index, self->begin()+index+count);
+      }
+SWIGINTERN void std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__Insert(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index,std::pair< SdfPath,UsdStageLoadRules::Rule > const &x){
+        if (index>=0 && index<(int)self->size()+1)
+          self->insert(self->begin()+index, x);
+        else
+          throw std::out_of_range("index");
+      }
+SWIGINTERN void std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__InsertRange(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index,std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const &values){
+        if (index>=0 && index<(int)self->size()+1)
+          self->insert(self->begin()+index, values.begin(), values.end());
+        else
+          throw std::out_of_range("index");
+      }
+SWIGINTERN void std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__RemoveAt(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index){
+        if (index>=0 && index<(int)self->size())
+          self->erase(self->begin() + index);
+        else
+          throw std::out_of_range("index");
+      }
+SWIGINTERN void std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__RemoveRange(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index,int count){
+        if (index < 0)
+          throw std::out_of_range("index");
+        if (count < 0)
+          throw std::out_of_range("count");
+        if (index >= (int)self->size()+1 || index+count > (int)self->size())
+          throw std::invalid_argument("invalid range");
+        self->erase(self->begin()+index, self->begin()+index+count);
+      }
+SWIGINTERN std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__Repeat(std::pair< SdfPath,UsdStageLoadRules::Rule > const &value,int count){
+        if (count < 0)
+          throw std::out_of_range("count");
+        return new std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >(count, value);
+      }
+SWIGINTERN void std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__Reverse__SWIG_0(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self){
+        std::reverse(self->begin(), self->end());
+      }
+SWIGINTERN void std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__Reverse__SWIG_1(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index,int count){
+        if (index < 0)
+          throw std::out_of_range("index");
+        if (count < 0)
+          throw std::out_of_range("count");
+        if (index >= (int)self->size()+1 || index+count > (int)self->size())
+          throw std::invalid_argument("invalid range");
+        std::reverse(self->begin()+index, self->begin()+index+count);
+      }
+SWIGINTERN void std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__SetRange(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *self,int index,std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const &values){
+        if (index < 0)
+          throw std::out_of_range("index");
+        if (index+values.size() > self->size())
+          throw std::out_of_range("index");
+        std::copy(values.begin(), values.end(), self->begin()+index);
+      }
+
 #include "pxr/usd/usd/resolveInfo.h"
 
 
@@ -102003,6 +102097,772 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_UsdStageCacheRequest_Manufacture(void *
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_new_UsdStageLoadRulesPair__SWIG_0() {
+  void * jresult ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *result = 0 ;
+  
+  result = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)new std::pair< SdfPath,UsdStageLoadRules::Rule >();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_new_UsdStageLoadRulesPair__SWIG_1(void * jarg1, int jarg2) {
+  void * jresult ;
+  SdfPath arg1 ;
+  UsdStageLoadRules::Rule arg2 ;
+  SdfPath *argp1 ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *result = 0 ;
+  
+  argp1 = (SdfPath *)jarg1; 
+  if (!argp1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null SdfPath", 0);
+    return 0;
+  }
+  arg1 = *argp1; 
+  arg2 = (UsdStageLoadRules::Rule)jarg2; 
+  result = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)new std::pair< SdfPath,UsdStageLoadRules::Rule >(arg1,arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_new_UsdStageLoadRulesPair__SWIG_2(void * jarg1) {
+  void * jresult ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg1 = 0 ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *result = 0 ;
+  
+  arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::pair< SdfPath,UsdStageLoadRules::Rule > const & type is null", 0);
+    return 0;
+  } 
+  result = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)new std::pair< SdfPath,UsdStageLoadRules::Rule >((std::pair< SdfPath,UsdStageLoadRules::Rule > const &)*arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesPair_first_set(void * jarg1, void * jarg2) {
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *) 0 ;
+  SdfPath *arg2 = (SdfPath *) 0 ;
+  
+  arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg1; 
+  arg2 = (SdfPath *)jarg2; 
+  if (arg1) (arg1)->first = *arg2;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesPair_first_get(void * jarg1) {
+  void * jresult ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *) 0 ;
+  SdfPath *result = 0 ;
+  
+  arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg1; 
+  result = (SdfPath *)& ((arg1)->first);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesPair_second_set(void * jarg1, int jarg2) {
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *) 0 ;
+  UsdStageLoadRules::Rule arg2 ;
+  
+  arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg1; 
+  arg2 = (UsdStageLoadRules::Rule)jarg2; 
+  if (arg1) (arg1)->second = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesPair_second_get(void * jarg1) {
+  int jresult ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *) 0 ;
+  UsdStageLoadRules::Rule result;
+  
+  arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg1; 
+  result = (UsdStageLoadRules::Rule) ((arg1)->second);
+  jresult = (int)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_delete_UsdStageLoadRulesPair(void * jarg1) {
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *) 0 ;
+  
+  arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_Clear(void * jarg1) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  (arg1)->clear();
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_Add(void * jarg1, void * jarg2) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg2 = 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::pair< SdfPath,UsdStageLoadRules::Rule > const & type is null", 0);
+    return ;
+  } 
+  (arg1)->push_back((std::pair< SdfPath,UsdStageLoadRules::Rule > const &)*arg2);
+}
+
+
+SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_size(void * jarg1) {
+  unsigned long jresult ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >::size_type result;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  result = ((std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const *)arg1)->size();
+  jresult = (unsigned long)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_capacity(void * jarg1) {
+  unsigned long jresult ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >::size_type result;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  result = ((std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const *)arg1)->capacity();
+  jresult = (unsigned long)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_reserve(void * jarg1, unsigned long jarg2) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >::size_type arg2 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >::size_type)jarg2; 
+  (arg1)->reserve(arg2);
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_new_UsdStageLoadRulesVectorPair__SWIG_0() {
+  void * jresult ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *result = 0 ;
+  
+  result = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)new std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_new_UsdStageLoadRulesVectorPair__SWIG_1(void * jarg1) {
+  void * jresult ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = 0 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *result = 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const & type is null", 0);
+    return 0;
+  } 
+  result = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)new std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > >((std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const &)*arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_new_UsdStageLoadRulesVectorPair__SWIG_2(int jarg1) {
+  void * jresult ;
+  int arg1 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *result = 0 ;
+  
+  arg1 = (int)jarg1; 
+  try {
+    result = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)new_std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg___SWIG_2(arg1);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return 0;
+  }
+  
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_getitemcopy(void * jarg1, int jarg2) {
+  void * jresult ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > result;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  try {
+    result = std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__getitemcopy(arg1,arg2);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return 0;
+  }
+  
+  jresult = new std::pair< SdfPath,UsdStageLoadRules::Rule >((const std::pair< SdfPath,UsdStageLoadRules::Rule > &)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_getitem(void * jarg1, int jarg2) {
+  void * jresult ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *result = 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  try {
+    result = (std::pair< SdfPath,UsdStageLoadRules::Rule > *) &std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__getitem(arg1,arg2);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return 0;
+  }
+  
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_setitem(void * jarg1, int jarg2, void * jarg3) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg3 = 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg3;
+  if (!arg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::pair< SdfPath,UsdStageLoadRules::Rule > const & type is null", 0);
+    return ;
+  } 
+  try {
+    std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__setitem(arg1,arg2,(std::pair< SdfPath,UsdStageLoadRules::Rule > const &)*arg3);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return ;
+  }
+  
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_AddRange(void * jarg1, void * jarg2) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg2 = 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const & type is null", 0);
+    return ;
+  } 
+  std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__AddRange(arg1,(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const &)*arg2);
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_GetRange(void * jarg1, int jarg2, int jarg3) {
+  void * jresult ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *result = 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  try {
+    result = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__GetRange(arg1,arg2,arg3);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return 0;
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentException, (&_e)->what(), "");
+    return 0;
+  }
+  
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_Insert(void * jarg1, int jarg2, void * jarg3) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg3 = 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg3;
+  if (!arg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::pair< SdfPath,UsdStageLoadRules::Rule > const & type is null", 0);
+    return ;
+  } 
+  try {
+    std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__Insert(arg1,arg2,(std::pair< SdfPath,UsdStageLoadRules::Rule > const &)*arg3);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return ;
+  }
+  
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_InsertRange(void * jarg1, int jarg2, void * jarg3) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg3 = 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg3;
+  if (!arg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const & type is null", 0);
+    return ;
+  } 
+  try {
+    std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__InsertRange(arg1,arg2,(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const &)*arg3);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return ;
+  }
+  
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_RemoveAt(void * jarg1, int jarg2) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  try {
+    std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__RemoveAt(arg1,arg2);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return ;
+  }
+  
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_RemoveRange(void * jarg1, int jarg2, int jarg3) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  try {
+    std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__RemoveRange(arg1,arg2,arg3);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return ;
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentException, (&_e)->what(), "");
+    return ;
+  }
+  
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_Repeat(void * jarg1, int jarg2) {
+  void * jresult ;
+  std::pair< SdfPath,UsdStageLoadRules::Rule > *arg1 = 0 ;
+  int arg2 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *result = 0 ;
+  
+  arg1 = (std::pair< SdfPath,UsdStageLoadRules::Rule > *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::pair< SdfPath,UsdStageLoadRules::Rule > const & type is null", 0);
+    return 0;
+  } 
+  arg2 = (int)jarg2; 
+  try {
+    result = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__Repeat((std::pair< SdfPath,UsdStageLoadRules::Rule > const &)*arg1,arg2);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return 0;
+  }
+  
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_Reverse__SWIG_0(void * jarg1) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__Reverse__SWIG_0(arg1);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_Reverse__SWIG_1(void * jarg1, int jarg2, int jarg3) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  try {
+    std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__Reverse__SWIG_1(arg1,arg2,arg3);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return ;
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentException, (&_e)->what(), "");
+    return ;
+  }
+  
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRulesVectorPair_SetRange(void * jarg1, int jarg2, void * jarg3) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  int arg2 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg3 = 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg3;
+  if (!arg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const & type is null", 0);
+    return ;
+  } 
+  try {
+    std_vector_Sl_std_pair_Sl_SdfPath_Sc_UsdStageLoadRules_Rule_Sg__Sg__SetRange(arg1,arg2,(std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const &)*arg3);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
+    return ;
+  }
+  
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_delete_UsdStageLoadRulesVectorPair(void * jarg1) {
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) 0 ;
+  
+  arg1 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_new_UsdStageLoadRules__SWIG_0() {
+  void * jresult ;
+  UsdStageLoadRules *result = 0 ;
+  
+  result = (UsdStageLoadRules *)new UsdStageLoadRules();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_LoadAll() {
+  void * jresult ;
+  UsdStageLoadRules result;
+  
+  result = UsdStageLoadRules::LoadAll();
+  jresult = new UsdStageLoadRules((const UsdStageLoadRules &)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_LoadNone() {
+  void * jresult ;
+  UsdStageLoadRules result;
+  
+  result = UsdStageLoadRules::LoadNone();
+  jresult = new UsdStageLoadRules((const UsdStageLoadRules &)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_new_UsdStageLoadRules__SWIG_1(void * jarg1) {
+  void * jresult ;
+  UsdStageLoadRules *arg1 = 0 ;
+  UsdStageLoadRules *result = 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "UsdStageLoadRules const & type is null", 0);
+    return 0;
+  } 
+  result = (UsdStageLoadRules *)new UsdStageLoadRules((UsdStageLoadRules const &)*arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_LoadWithDescendants(void * jarg1, void * jarg2) {
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  SdfPath *arg2 = 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (SdfPath *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPath const & type is null", 0);
+    return ;
+  } 
+  (arg1)->LoadWithDescendants((SdfPath const &)*arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_LoadWithoutDescendants(void * jarg1, void * jarg2) {
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  SdfPath *arg2 = 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (SdfPath *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPath const & type is null", 0);
+    return ;
+  } 
+  (arg1)->LoadWithoutDescendants((SdfPath const &)*arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_Unload(void * jarg1, void * jarg2) {
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  SdfPath *arg2 = 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (SdfPath *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPath const & type is null", 0);
+    return ;
+  } 
+  (arg1)->Unload((SdfPath const &)*arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_LoadAndUnload(void * jarg1, void * jarg2, void * jarg3, int jarg4) {
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  SdfPathSet *arg2 = 0 ;
+  SdfPathSet *arg3 = 0 ;
+  UsdLoadPolicy arg4 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (SdfPathSet *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPathSet const & type is null", 0);
+    return ;
+  } 
+  arg3 = (SdfPathSet *)jarg3;
+  if (!arg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPathSet const & type is null", 0);
+    return ;
+  } 
+  arg4 = (UsdLoadPolicy)jarg4; 
+  (arg1)->LoadAndUnload((SdfPathSet const &)*arg2,(SdfPathSet const &)*arg3,arg4);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_AddRule(void * jarg1, void * jarg2, int jarg3) {
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  SdfPath *arg2 = 0 ;
+  UsdStageLoadRules::Rule arg3 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (SdfPath *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPath const & type is null", 0);
+    return ;
+  } 
+  arg3 = (UsdStageLoadRules::Rule)jarg3; 
+  (arg1)->AddRule((SdfPath const &)*arg2,arg3);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_SetRules__SWIG_0(void * jarg1, void * jarg2) {
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *arg2 = 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const & type is null", 0);
+    return ;
+  } 
+  (arg1)->SetRules((std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > const &)*arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_Minimize(void * jarg1) {
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  (arg1)->Minimize();
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_IsLoaded(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  SdfPath *arg2 = 0 ;
+  bool result;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (SdfPath *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPath const & type is null", 0);
+    return 0;
+  } 
+  result = (bool)((UsdStageLoadRules const *)arg1)->IsLoaded((SdfPath const &)*arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_IsLoadedWithAllDescendants(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  SdfPath *arg2 = 0 ;
+  bool result;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (SdfPath *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPath const & type is null", 0);
+    return 0;
+  } 
+  result = (bool)((UsdStageLoadRules const *)arg1)->IsLoadedWithAllDescendants((SdfPath const &)*arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_IsLoadedWithNoDescendants(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  SdfPath *arg2 = 0 ;
+  bool result;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (SdfPath *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPath const & type is null", 0);
+    return 0;
+  } 
+  result = (bool)((UsdStageLoadRules const *)arg1)->IsLoadedWithNoDescendants((SdfPath const &)*arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_GetEffectiveRuleForPath(void * jarg1, void * jarg2) {
+  int jresult ;
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  SdfPath *arg2 = 0 ;
+  UsdStageLoadRules::Rule result;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (SdfPath *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "SdfPath const & type is null", 0);
+    return 0;
+  } 
+  result = (UsdStageLoadRules::Rule)((UsdStageLoadRules const *)arg1)->GetEffectiveRuleForPath((SdfPath const &)*arg2);
+  jresult = (int)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_GetRules(void * jarg1) {
+  void * jresult ;
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *result = 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  result = (std::vector< std::pair< SdfPath,UsdStageLoadRules::Rule > > *) &((UsdStageLoadRules const *)arg1)->GetRules();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_UsdStageLoadRules_swap(void * jarg1, void * jarg2) {
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  UsdStageLoadRules *arg2 = 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  arg2 = (UsdStageLoadRules *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "UsdStageLoadRules & type is null", 0);
+    return ;
+  } 
+  (arg1)->swap(*arg2);
+}
+
+
+SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_hash_value__SWIG_61(void * jarg1) {
+  unsigned long jresult ;
+  UsdStageLoadRules *arg1 = 0 ;
+  size_t result;
+  
+  arg1 = (UsdStageLoadRules *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "UsdStageLoadRules const & type is null", 0);
+    return 0;
+  } 
+  result = hash_value((UsdStageLoadRules const &)*arg1);
+  jresult = (unsigned long)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_delete_UsdStageLoadRules(void * jarg1) {
+  UsdStageLoadRules *arg1 = (UsdStageLoadRules *) 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_pxr_swap__SWIG_10(void * jarg1, void * jarg2) {
+  UsdStageLoadRules *arg1 = 0 ;
+  UsdStageLoadRules *arg2 = 0 ;
+  
+  arg1 = (UsdStageLoadRules *)jarg1;
+  if (!arg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "UsdStageLoadRules & type is null", 0);
+    return ;
+  } 
+  arg2 = (UsdStageLoadRules *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "UsdStageLoadRules & type is null", 0);
+    return ;
+  } 
+  swap(*arg1,*arg2);
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_pxr_new_UsdResolveInfo() {
   void * jresult ;
   UsdResolveInfo *result = 0 ;
@@ -102143,7 +103003,11 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_pxr_UsdObject_IsValid(void * jarg1) {
 }
 
 
+<<<<<<< HEAD
 SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_hash_value__SWIG_61(void * jarg1) {
+=======
+SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_hash_value__SWIG_62(void * jarg1) {
+>>>>>>> RC-3.0.0-exp.5
   unsigned long jresult ;
   UsdObject *arg1 = 0 ;
   size_t result;
@@ -114418,7 +115282,11 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_pxr_UsdGeomPrimvar_SetIdTarget(void *
 }
 
 
+<<<<<<< HEAD
 SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_hash_value__SWIG_62(void * jarg1) {
+=======
+SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_hash_value__SWIG_63(void * jarg1) {
+>>>>>>> RC-3.0.0-exp.5
   unsigned long jresult ;
   UsdGeomPrimvar *arg1 = 0 ;
   size_t result;
@@ -141294,7 +142162,11 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_pxr_UsdSkelAnimQuery_IsValid(void * j
 }
 
 
+<<<<<<< HEAD
 SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_hash_value__SWIG_63(void * jarg1) {
+=======
+SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_hash_value__SWIG_64(void * jarg1) {
+>>>>>>> RC-3.0.0-exp.5
   unsigned long jresult ;
   UsdSkelAnimQuery *arg1 = 0 ;
   size_t result;
@@ -143416,7 +144288,11 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_pxr_UsdSkelSkeletonQuery_HasRestPose(
 }
 
 
+<<<<<<< HEAD
 SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_hash_value__SWIG_64(void * jarg1) {
+=======
+SWIGEXPORT unsigned long SWIGSTDCALL CSharp_pxr_hash_value__SWIG_65(void * jarg1) {
+>>>>>>> RC-3.0.0-exp.5
   unsigned long jresult ;
   UsdSkelSkeletonQuery *arg1 = 0 ;
   size_t result;

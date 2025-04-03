@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdMedia.meta
 guid: 5584e2443e346fd4b81c7fea67245198
+========
+guid: c0fcd1caa0d197b4888af09965cfe9d4
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Dependencies.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

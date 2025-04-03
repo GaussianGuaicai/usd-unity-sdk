@@ -1,4 +1,4 @@
-﻿// Copyright 2019 Jeremy Cowles. All rights reserved.
+// Copyright 2019 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,13 +55,7 @@ namespace Unity.Formats.USD
             get { return ClipCaps.None; }
         }
 
-        public bool IsUSDZ
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(m_usdFile) && m_usdFile.ToLowerInvariant().EndsWith(".usdz");
-            }
-        }
+        public bool IsUSDZ => !string.IsNullOrEmpty(m_usdFile) && m_usdFile.ToLowerInvariant().EndsWith(".usdz");
 
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {

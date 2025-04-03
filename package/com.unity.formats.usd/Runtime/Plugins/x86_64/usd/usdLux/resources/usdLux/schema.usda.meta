@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdLux/resources/usdLux/schema.usda.meta
 guid: 746e404d99f951e41a1057dab41b62c0
+========
+guid: 528dae5079720ff488640c423c01eefc
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usd/resources/usd/schema.usda.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

@@ -83,7 +83,7 @@ namespace Unity.Formats.USD
                         // normal needs to be converted if the one on disk isn't really a normal map
                         // (e.g. created from greyscale)
                         UnityEditor.TextureImporter importer =
-                            (UnityEditor.TextureImporter) UnityEditor.AssetImporter.GetAtPath(
+                            (UnityEditor.TextureImporter)UnityEditor.AssetImporter.GetAtPath(
                                 UnityEditor.AssetDatabase.GetAssetPath(srcTexture2d));
                         if (importer.textureType != UnityEditor.TextureImporterType.NormalMap)
                         {
@@ -116,13 +116,14 @@ namespace Unity.Formats.USD
                 if (!string.IsNullOrEmpty(srcPath))
                 {
 #if UNITY_2019_2_OR_GREATER
-          // Since textures might be inside of packages for various reasons we should support that.
-          // Usually this would just be "Path.GetFullPath(srcPath)", but USD export messes with the CWD (Working Directory)
-          // and so we have to do a bit more path wrangling here.
-          if(srcPath.StartsWith("Packages")) {
-            var pi = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(srcPath);
-            srcPath = pi.resolvedPath + srcPath.Substring(("Packages/" + pi.name).Length);
-          }
+                    // Since textures might be inside of packages for various reasons we should support that.
+                    // Usually this would just be "Path.GetFullPath(srcPath)", but USD export messes with the CWD (Working Directory)
+                    // and so we have to do a bit more path wrangling here.
+                    if (srcPath.StartsWith("Packages"))
+                    {
+                        var pi = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(srcPath);
+                        srcPath = pi.resolvedPath + srcPath.Substring(("Packages/" + pi.name).Length);
+                    }
 #endif
                     if (srcPath.StartsWith("Assets"))
                     {
@@ -300,7 +301,7 @@ namespace Unity.Formats.USD
                 filePath = ImporterBase.MakeRelativePath(scene.FilePath, filePath);
                 filePath = filePath.Replace("\\", "/");
 
-                var uvReader = new PrimvarReaderSample<Vector2>();
+                var uvReader = new PrimvarReaderExportSample<Vector2>();
                 uvReader.varname.defaultValue = new TfToken("st");
                 scene.Write(usdShaderPath + "/uvReader", uvReader);
                 var usdTexReader = new TextureReaderSample(filePath, usdShaderPath + "/uvReader.outputs:result");

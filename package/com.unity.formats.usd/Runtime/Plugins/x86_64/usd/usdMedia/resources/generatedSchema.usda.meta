@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdMedia/resources/generatedSchema.usda.meta
 guid: 643a69915c75d4144b4dc87f6e927690
+========
+guid: 361458a61b617da42a734360a60bb1c2
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdGeom/resources/generatedSchema.usda.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

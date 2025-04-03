@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/ar/resources/plugInfo.json.meta
 guid: 14fec5655da022b49a45181f8517dfa3
+========
+guid: 9e74c6eee80c23742a9f5d46bb73be93
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdUI/resources/plugInfo.json.meta
 TextScriptImporter:
   externalObjects: {}
   userData: 

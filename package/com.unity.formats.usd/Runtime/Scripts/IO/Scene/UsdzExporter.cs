@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ using System.IO;
 using UnityEngine;
 using USD.NET;
 using pxr;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Unity.Formats.USD
 {
@@ -40,20 +41,25 @@ namespace Unity.Formats.USD
             string usdcFileName = Path.GetFileNameWithoutExtension(usdzFilePath) + ".usdc";
             string usdzFileName = Path.GetFileName(usdzFilePath);
 
+            bool success = true;
+
+            Stopwatch analyticsTimer = new Stopwatch();
+            analyticsTimer.Start();
+
             try
             {
                 // Set the current working directory to the tmp directory to export with relative paths.
                 Directory.SetCurrentDirectory(tmpDirPath);
 
                 // Create the tmp .usd scene, into which the data will be exported.
-                Scene scene = InitForSave(usdcFileName);
+                Scene scene = ExportHelpers.InitForSave(Path.Combine(tmpDirPath, usdcFileName));
                 Vector3 localScale = root.transform.localScale;
 
                 try
                 {
                     // USDZ is in centimeters.
                     root.transform.localScale = localScale * 100;
-
+                    scene.MetersPerUnit = 0.01;
                     // Export the temp scene.
                     SceneExporter.Export(root,
                         scene,
@@ -74,11 +80,12 @@ namespace Unity.Formats.USD
                 }
 
                 SdfAssetPath assetPath = new SdfAssetPath(usdcFileName);
-                bool success = pxr.UsdCs.UsdUtilsCreateNewARKitUsdzPackage(assetPath, usdzFileName);
+                success = pxr.UsdCs.UsdUtilsCreateNewARKitUsdzPackage(assetPath, usdzFileName);
 
                 if (!success)
                 {
-                    Debug.LogError("Couldn't export " + root.name + " to the usdz file: " + usdzFilePath);
+                    Debug.LogError($"Couldn't export {root.name} to the usdz file {usdzFilePath}");
+                    success = false;
                     return;
                 }
 
@@ -89,29 +96,10 @@ namespace Unity.Formats.USD
                 // Clean up temp files.
                 Directory.SetCurrentDirectory(currentDir);
                 tmpDir.Delete(recursive: true);
+
+                analyticsTimer.Stop();
+                UsdEditorAnalytics.SendExportEvent(".usdz", analyticsTimer.Elapsed.TotalMilliseconds, success);
             }
-        }
-
-        internal static Scene InitForSave(string filePath)
-        {
-            string fileDir = Path.GetDirectoryName(filePath);
-
-            if (!string.IsNullOrEmpty(fileDir) && !Directory.Exists(fileDir))
-            {
-                var di = Directory.CreateDirectory(fileDir);
-                if (!di.Exists)
-                {
-                    Debug.LogError("Failed to create directory: " + fileDir);
-                    return null;
-                }
-            }
-
-            InitUsd.Initialize();
-            Scene scene = Scene.Create(filePath);
-            scene.Time = 0;
-            scene.StartTime = 0;
-            scene.EndTime = 0;
-            return scene;
         }
     }
 }

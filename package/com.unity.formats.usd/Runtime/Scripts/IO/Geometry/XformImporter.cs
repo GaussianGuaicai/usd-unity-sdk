@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Jeremy Cowles. All rights reserved.
+// Copyright 2018 Jeremy Cowles. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using UnityEngine;
 using USD.NET;
 using USD.NET.Unity;
@@ -42,9 +41,9 @@ namespace Unity.Formats.USD
             {
                 System.Reflection.MemberInfo transformMember = null;
                 transformMember = usdXf.GetType().GetMember("transform")[0];
-                HashSet<System.Reflection.MemberInfo> members;
-                if (!scene.AccessMask.Included.TryGetValue(path, out members) ||
-                    !members.Contains(transformMember))
+                DeserializationContext deserializationContext;
+                if (!scene.AccessMask.Included.TryGetValue(path, out deserializationContext) ||
+                    !deserializationContext.dynamicMembers.Contains(transformMember))
                 {
                     return;
                 }
@@ -57,10 +56,6 @@ namespace Unity.Formats.USD
             GameObject go,
             SceneImportOptions options)
         {
-            UnityEngine.Profiling.Profiler.BeginSample("Change Handedness");
-            ImportXform(ref xf, options);
-            UnityEngine.Profiling.Profiler.EndSample();
-
             Vector3 localPos;
             Quaternion localRot;
             Vector3 localScale;

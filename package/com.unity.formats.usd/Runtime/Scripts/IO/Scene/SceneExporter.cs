@@ -18,6 +18,7 @@ using System.Linq;
 using UnityEngine;
 using USD.NET;
 using USD.NET.Unity;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Unity.Formats.USD
 {
@@ -62,6 +63,7 @@ namespace Unity.Formats.USD
         public bool forceOpacity = true;
         public bool exportNative = false;
         public float scale = 1.0f;
+        public bool exportTransformOverrides = false;
 
         public BasisTransformation basisTransform = BasisTransformation.FastWithNegativeScale;
         public ActiveExportPolicy activePolicy = ActiveExportPolicy.ExportAsVisibility;
@@ -80,6 +82,9 @@ namespace Unity.Formats.USD
 
         // Sample object instances, shared across multiple export methods.
         public Dictionary<Type, SampleBase> samples = new Dictionary<Type, SampleBase>();
+
+        // For analytics purposes
+        public Stopwatch analyticsTotalTimeStopwatch = new Stopwatch();
     }
 
     public class Exporter
@@ -123,12 +128,14 @@ namespace Unity.Formats.USD
             bool zeroRootTransform,
             bool exportMaterials = false,
             bool exportMonoBehaviours = false,
+            bool exportOverrides = false,
             bool forceOpacity = false)
         {
             var context = new ExportContext();
             context.scene = scene;
             context.basisTransform = basisTransform;
             context.exportRoot = root.transform.parent;
+            context.exportTransformOverrides = exportOverrides;
             context.exportNative = true; // Gaussian: To export all gameobject components and its properties
             context.forceOpacity = forceOpacity;
             SyncExportContext(root, context);
@@ -170,6 +177,9 @@ namespace Unity.Formats.USD
                 root.transform.localRotation = Quaternion.identity;
                 root.transform.localScale = Vector3.one;
             }
+
+            // Scale overall scene for export (e.g. USDZ export needs scale 100)
+            root.transform.localScale *= context.scale;
 
             UnityEngine.Profiling.Profiler.BeginSample("USD: Export");
             try
@@ -358,7 +368,7 @@ namespace Unity.Formats.USD
             if (context.samples.TryGetValue(typeof(T), out sb)) {
               return (T)sb;
             }
-      
+
             sb = (new T());
             context.samples[typeof(T)] = sb;
             return (T)sb;
@@ -407,8 +417,8 @@ namespace Unity.Formats.USD
                         {
                             animatorXf = animatorXf.parent;
                             Debug.LogWarning("No children found under animator: " +
-                                             UnityTypeConverter.GetPath(animatorXf) + " Root bone XF: " +
-                                             UnityTypeConverter.GetPath(rootBoneXf));
+                                UnityTypeConverter.GetPath(animatorXf) + " Root bone XF: " +
+                                UnityTypeConverter.GetPath(rootBoneXf));
                             continue;
                         }
 
@@ -498,27 +508,32 @@ namespace Unity.Formats.USD
                         // Exporting animation is only possible while in-editor (in 2018 and earlier).
 #if UNITY_EDITOR
 #if false // Currently disabled, future work.
-            if (anim.layerCount > 0) {
-              for (int l = 0; l < anim.layerCount; l++) {
-                int clipCount = anim.GetCurrentAnimatorClipInfoCount(l);
-                var clipInfos = anim.GetCurrentAnimatorClipInfo(l);
-                foreach (var clipInfo in clipInfos) {
-                  var bindings = UnityEditor.AnimationUtility.GetCurveBindings(clipInfo.clip);
-                  // Properties are expressed as individual values, for transforms this is:
-                  //   m_LocalPosition.x,y,z
-                  //   m_LocalScale.x,y,z
-                  //   m_LocalRotation.x,y,z,w
-                  // Which means they must be reaggregated into matrices.
-                  foreach (var binding in bindings) {
-                    if (binding.type != typeof(Transform)) {
-                      continue;
-                    }
-                    Debug.Log(binding.path + "." + binding.propertyName);
-                    var knot = UnityEditor.AnimationUtility.GetEditorCurve(clipInfo.clip, binding);
-                  }
-                }
-              }
-            }
+                        if (anim.layerCount > 0)
+                        {
+                            for (int l = 0; l < anim.layerCount; l++)
+                            {
+                                int clipCount = anim.GetCurrentAnimatorClipInfoCount(l);
+                                var clipInfos = anim.GetCurrentAnimatorClipInfo(l);
+                                foreach (var clipInfo in clipInfos)
+                                {
+                                    var bindings = UnityEditor.AnimationUtility.GetCurveBindings(clipInfo.clip);
+                                    // Properties are expressed as individual values, for transforms this is:
+                                    //   m_LocalPosition.x,y,z
+                                    //   m_LocalScale.x,y,z
+                                    //   m_LocalRotation.x,y,z,w
+                                    // Which means they must be reaggregated into matrices.
+                                    foreach (var binding in bindings)
+                                    {
+                                        if (binding.type != typeof(Transform))
+                                        {
+                                            continue;
+                                        }
+                                        Debug.Log(binding.path + "." + binding.propertyName);
+                                        var knot = UnityEditor.AnimationUtility.GetEditorCurve(clipInfo.clip, binding);
+                                    }
+                                }
+                            }
+                        }
 #endif // disabled.
 #endif // Editor only.
 
@@ -533,24 +548,31 @@ namespace Unity.Formats.USD
         static void InitExportableObjects(GameObject go,
             ExportContext context)
         {
-            var smr = go.GetComponent<SkinnedMeshRenderer>();
-            var mr = go.GetComponent<MeshRenderer>();
-            var mf = go.GetComponent<MeshFilter>();
-            var cam = go.GetComponent<Camera>();
-            var light = go.GetComponent<Light>();
-      Transform expRoot = context.exportRoot;
-
-            var tmpPath = new pxr.SdfPath(UnityTypeConverter.GetPath(go.transform, expRoot));
-            while (!tmpPath.IsRootPrimPath())
+            if (context.exportTransformOverrides)
             {
-                tmpPath = tmpPath.GetParentPath();
+                CreateExportPlan(go, CreateSample<XformSample>(context), XformExporter.ExportXform, context);
             }
+            else
+            {
+                var smr = go.GetComponent<SkinnedMeshRenderer>();
 
-            // TODO: What if this path is in use?
-            string materialBasePath = tmpPath.ToString() + "/Materials/";
+                var mr = go.GetComponent<MeshRenderer>();
+                var mf = go.GetComponent<MeshFilter>();
+                var cam = go.GetComponent<Camera>();
+                var light = go.GetComponent<Light>();
+                Transform expRoot = context.exportRoot;
 
-            // Ensure the "Materials" prim is defined with a valid prim type.
-            context.scene.Write(materialBasePath.TrimEnd('/'), new ScopeSample());
+                var tmpPath = new pxr.SdfPath(UnityTypeConverter.GetPath(go.transform, expRoot));
+                while (!tmpPath.IsRootPrimPath())
+                {
+                    tmpPath = tmpPath.GetParentPath();
+                }
+
+                // TODO: What if this path is in use?
+                string materialBasePath = tmpPath.ToString() + "/Materials/";
+
+                // Ensure the "Materials" prim is defined with a valid prim type.
+                context.scene.Write(materialBasePath.TrimEnd('/'), new ScopeSample());
 
             if (smr != null)
             {
@@ -631,6 +653,7 @@ namespace Unity.Formats.USD
                 CreateExportPlan(go, CreateSample<XformSample>(context), NativeExporter.ExportObject, context,
                     insertFirst: false);
             }
+        }
         }
 
         static Transform MergeBonesBelowAnimator(Transform animator, ExportContext context)

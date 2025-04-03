@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/ar/resources.meta
 guid: 1ba0c9f4be0f5dc459244ece7e2b3e0b
+========
+guid: 3a7098a259ac8f144a3d0d81326db615
+>>>>>>>> RC-3.0.0-exp.5:package/com.unity.formats.usd/Runtime/Plugins/x86_64/usd/usdUI/resources.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

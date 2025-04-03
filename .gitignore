@@ -61,8 +61,7 @@ TestProject/*.sln*
 TestProject/*.csproj
 TestProject/.idea
 TestProject/Logs
-TestProject/Assets/Plugins
-TestProject/Assets/Samples*
+TestProject/Assets/*
 inst-dbg/
 *.code-workspace
 .vscode
@@ -70,3 +69,14 @@ package/com.unity.formats.usd/TestRunnerOptions.json.meta
 
 # Unity
 *.meta
+package/com.unity.formats.usd/TestRunnerOptions.json.meta
+/artifacts/
+TestProject/*/.idea
+TestProject/Usd-Recorder/Library
+TestProject/**/Temp
+TestProject/**/Logs
+TestProject/**/*.csproj
+TestProject/**/*.sln
+TestProject/Usd-Development/Library
+TestProject/Usd-Development/.vs
+build_usdcs
