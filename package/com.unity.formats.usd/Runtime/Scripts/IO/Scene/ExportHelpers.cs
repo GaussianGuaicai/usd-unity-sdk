@@ -6,6 +6,12 @@ using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Unity.Formats.USD
 {
+    public static class ExportOptional
+    {
+        // Optional Export Settings
+        public const string MenuLightProbesExport = "USD/Options/LightProbes as Points";
+        public static bool lightProbesAsPoints;
+    }
     public static class ExportHelpers
     {
         public static Scene InitForSave(string filePath)

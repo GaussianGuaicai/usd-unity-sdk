@@ -128,7 +128,14 @@ namespace Unity.Formats.USD
                     var correctProbe = UnityTypeConverter.ChangeBasis(probes[i]);
                     usd_value[i] = new GfVec3f(correctProbe.x, correctProbe.y, correctProbe.z);
                 }
-                prim.CreateAttribute(new TfToken(probeGroup_prefix),SdfValueTypeNames.Float3Array).Set(usd_value);
+                var attribProbePosition = prim.CreateAttribute(new TfToken(probeGroup_prefix),SdfValueTypeNames.Float3Array);
+                attribProbePosition.Set(usd_value);
+                
+                if(ExportOptional.lightProbesAsPoints)
+                {
+                    UsdGeomPoints usdGeomPoints = UsdGeomPoints.Define(prim.GetStage(),primPath);
+                    usdGeomPoints.CreatePointsAttr().Set(usd_value);
+                }
             }
 
 

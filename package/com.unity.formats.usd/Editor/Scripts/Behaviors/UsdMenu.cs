@@ -282,5 +282,18 @@ namespace Unity.Formats.USD
                 return;
             }
         }
+
+        // ======== Optional Export Menus ========
+        [MenuItem(ExportOptional.MenuLightProbesExport)]
+        static void LightProbesExport()
+        {
+            ExportOptional.lightProbesAsPoints = !ExportOptional.lightProbesAsPoints;
+        }
+        [MenuItem(ExportOptional.MenuLightProbesExport, true)]
+        static bool LightProbesExportValidate()
+        {
+            Menu.SetChecked(ExportOptional.MenuLightProbesExport, ExportOptional.lightProbesAsPoints);
+            return true;
+        }
     }
 }
