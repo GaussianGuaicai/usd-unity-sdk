@@ -295,5 +295,16 @@ namespace Unity.Formats.USD
             Menu.SetChecked(ExportOptional.MenuLightProbesExport, ExportOptional.lightProbesAsPoints);
             return true;
         }
+        [MenuItem(ExportOptional.MenuLODGroupsExport)]
+        static void ExportLODGroups()
+        {
+            ExportOptional.lODGroupsAsVariantSets = !ExportOptional.lODGroupsAsVariantSets;
+        }
+        [MenuItem(ExportOptional.MenuLODGroupsExport, true)]
+        static bool ExportLODGroupsValidate()
+        {
+            Menu.SetChecked(ExportOptional.MenuLODGroupsExport, ExportOptional.lODGroupsAsVariantSets);
+            return true;
+        }
     }
 }

@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using pxr;
 using UnityEngine;
 using USD.NET;
 using USD.NET.Unity;
@@ -85,6 +86,9 @@ namespace Unity.Formats.USD
 
         // For analytics purposes
         public Stopwatch analyticsTotalTimeStopwatch = new Stopwatch();
+
+        // use to track which prims involve LOD variants, and need to remove the oppinion stronger then variant
+        public List<string> lodVeriantsPrimPaths = new List<string>();
     }
 
     public class Exporter
@@ -321,6 +325,18 @@ namespace Unity.Formats.USD
                     {
                         Debug.LogException(new Exception("Error setting visibility: " + path, ex));
                         continue;
+                    }
+
+                    // Clear local opinion for LOD variants prim
+                    if(context.lodVeriantsPrimPaths.Contains(path))
+                    {
+                        var im = new UsdGeomImageable(scene.GetPrimAtPath(path));
+                        if (im)
+                        {
+                            UsdAttribute attrVisibility = im.GetVisibilityAttr();
+                            if (attrVisibility.Get()!=new VtValue(UsdGeomTokens.invisible))
+                                attrVisibility.Clear();
+                        }
                     }
 
                     UnityEngine.Profiling.Profiler.EndSample();

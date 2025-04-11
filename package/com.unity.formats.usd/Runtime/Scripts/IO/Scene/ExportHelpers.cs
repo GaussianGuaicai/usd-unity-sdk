@@ -10,7 +10,9 @@ namespace Unity.Formats.USD
     {
         // Optional Export Settings
         public const string MenuLightProbesExport = "USD/Options/LightProbes as Points";
-        public static bool lightProbesAsPoints;
+        public static bool lightProbesAsPoints = false;
+        public const string MenuLODGroupsExport = "USD/Options/LOD Groups as Variant Sets";
+        public static bool lODGroupsAsVariantSets = false;
     }
     public static class ExportHelpers
     {

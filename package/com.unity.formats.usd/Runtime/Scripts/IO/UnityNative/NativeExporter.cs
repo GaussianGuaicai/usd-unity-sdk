@@ -45,7 +45,7 @@ namespace Unity.Formats.USD
             ObjectToUsd(objContext.gameObject, prim, exportContext.scene);
             foreach (Component comp in objContext.gameObject.GetComponents(typeof(Component)))
             {
-                ComponentToUsd(comp, objContext.path, exportContext.scene);
+                ComponentToUsd(comp, objContext.path, exportContext.scene, exportContext);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Unity.Formats.USD
         /// <summary>
         /// Exports a single component to USD, does not include the parent GameObject.
         /// </summary>
-        static void ComponentToUsd(Component component, string path, Scene scene)
+        static void ComponentToUsd(Component component, string path, Scene scene, ExportContext exportContext)
         {
             var obj = new SerializedObject(component);
             var sb = new System.Text.StringBuilder();
@@ -91,12 +91,26 @@ namespace Unity.Formats.USD
                 var primPath = new pxr.SdfPath(path);
                 var prim = scene.GetPrimAtPath(primPath);
 
+                Dictionary<string,List<GameObject>> lods_info = new Dictionary<string, List<GameObject>>();
+                pxr.UsdVariantSet variantSet = null;
+                string first_variantName = "";
+                if(ExportOptional.lODGroupsAsVariantSets)
+                {
+                    variantSet = prim.GetVariantSet("lods");
+                    if (!variantSet.IsValid())
+                    {
+                        variantSet = prim.GetVariantSets().AddVariantSet("lods");
+                    }
+                }
+
                 LODGroup lodgroup = (LODGroup)component;
                 string lod_prefix = "unity:LODGroup:lod";
                 var lods = lodgroup.GetLODs();
                 for (int i = 0; i < lods.Length; i++)
                 {
-                    var attrName = new pxr.TfToken(lod_prefix + i.ToString());
+                    string lod_suffix = i.ToString();
+                    var attrName = new TfToken(lod_prefix + lod_suffix);
+
                     List<GameObject> lod_targets = new List<GameObject>();
                     foreach (var renderer in lods[i].renderers)
                     {
@@ -109,9 +123,74 @@ namespace Unity.Formats.USD
                     }
                     var targets_name = lod_targets.Select(target => target.name).ToArray();
 
+                    // Add variant for each LODs
+                    if(ExportOptional.lODGroupsAsVariantSets)
+                    {
+                        var variantName = lod_suffix;
+                        variantSet.AddVariant(variantName);
+                        lods_info.Add(variantName, lod_targets);
+                        if(i==0) first_variantName = variantName;
+                    }
+
                     pxr.VtStringArray usd_value = new pxr.VtStringArray((uint)targets_name.Length,"");
                     for (int j = 0; j < targets_name.Length; j++) usd_value[j] = targets_name[j];
-                    prim.CreateAttribute(attrName, SdfValueTypeNames.StringArray).Set(usd_value);
+                    
+                    UsdAttribute attrib_lod = prim.CreateAttribute(attrName, SdfValueTypeNames.StringArray);
+                    attrib_lod.Set(usd_value);
+                }
+
+                // Variant Editing
+                if (ExportOptional.lODGroupsAsVariantSets)
+                {
+                    var srcEditTarget = scene.Stage.GetEditTargetForLocalLayer(scene.Stage.GetRootLayer());
+                    foreach (var lod_info in lods_info)
+                    {
+                        var variantName = lod_info.Key;
+                        var variantGameObjects = lod_info.Value;
+
+                        var other_lods_info = lods_info.Where(info => info.Key != lod_info.Key);
+                        var other_lods_gos = other_lods_info.SelectMany(kv => kv.Value).Except(variantGameObjects); //it may contain duplicates from current variantGameObjects, just remove it.
+
+                        variantSet.SetVariantSelection(variantName);
+                        var editTarget = variantSet.GetVariantEditTarget();
+                        foreach (var other_go in other_lods_gos)
+                        {
+                            if (!exportContext.plans.TryGetValue(other_go, out var plan))
+                            {
+                                Debug.LogError("USD LOD Export: No plan to export " + other_go, other_go);
+                                continue;
+                            }
+                            if (plan.exporters.Count() == 0)
+                            {
+                                Debug.LogError("USD LOD Export: No exporter for " + other_go, other_go);
+                                continue;
+                            }
+
+                            var other_primpath = new SdfPath(plan.exporters.First().path);
+                            var other_prim = scene.Stage.DefinePrim(other_primpath); // make sure is defined even its not exist
+                            if (other_prim == null)
+                            {
+                                Debug.LogError("USD LOD Export: No prim for " + other_primpath, other_go);
+                                continue;
+                            }
+
+                            // LODs object have to be under the same hierarchy
+                            if(other_primpath.GetCommonPrefix(primPath)!=primPath)
+                            {
+                                Debug.LogError("USD LOD Export: LODs are not under the same hierarchy " + other_primpath, other_go);
+                                continue;
+                            }
+
+                            // ==== Variant Editing =====
+                            exportContext.lodVeriantsPrimPaths.Add(other_primpath); // this will clear its local opinion later
+                            scene.Stage.SetEditTarget(editTarget);
+                            var other_imageable = new UsdGeomImageable(other_prim);
+                            other_imageable.MakeInvisible();
+                            scene.Stage.SetEditTarget(srcEditTarget);
+                            // =========================
+                        }
+                    }
+                    variantSet.SetVariantSelection(first_variantName);
                 }
             }
             else if (component is LightProbeGroup)
