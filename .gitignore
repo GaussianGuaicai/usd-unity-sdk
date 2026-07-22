@@ -80,3 +80,6 @@ TestProject/**/*.sln
 TestProject/Usd-Development/Library
 TestProject/Usd-Development/.vs
 build_usdcs
+
+# Test
+package/com.unity.formats.usd/Tests/*

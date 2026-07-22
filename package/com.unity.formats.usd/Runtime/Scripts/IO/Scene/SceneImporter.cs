@@ -1340,6 +1340,15 @@ namespace Unity.Formats.USD
                     GameObject go = primMap[pathAndSample.path];
                     UsdPrim usdPrim = scene.GetPrimAtPath(pathAndSample.path);
                     NativeImporter.ImportObject(scene, go, usdPrim, importOptions);
+
+                    // Light samples inherit XformSample but do not implement
+                    // ISanitizable, so Scene.ReadAll does not apply the
+                    // USD-to-Unity basis conversion automatically. Keep their
+                    // local transform consistent with every other imported
+                    // xform before decomposing it onto the GameObject.
+                    Matrix4x4 localTransform = pathAndSample.sample.transform;
+                    XformImporter.ImportXform(ref localTransform, importOptions);
+                    pathAndSample.sample.transform = localTransform;
                     XformImporter.BuildXform(pathAndSample.path, pathAndSample.sample, go, importOptions, scene);
 
                     if (scene.AccessMask == null || scene.IsPopulatingAccessMask)
